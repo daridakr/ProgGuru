@@ -1,0 +1,342 @@
+﻿@page "/groups/{id}"
+@model Daridakr.ProgGuru.Web.Pages.Groups.GroupModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@using Volo.Abp.Users
+@inject IHtmlLocalizer<ProgGuruResource> L
+@inject ICurrentUser CurrentUser
+@section styles {
+    <abp-style src="/Pages/Index.css" />
+}
+@section scripts {
+    <abp-script src="/Pages/Groups/Group.js" />
+}
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
+
+@if(@Model.Group != null) {
+    @*INFORMATION*@
+    <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
+            <div class="col" style="max-width: 70%;">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4 groupBox">
+                            <img class="card-img" src="@Model.Group.CoverImagePath"
+                            alt="Group cover" style="align-items: center; width: 80% !important;">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h4 class="card-title">@Model.Group.Title</h4>
+                                <p class="card-text">@Model.Group.Subtitle</p>
+                                @if(Model.IsCurrentUserNotSubscribe)
+                                {
+                                    <button value="@Model.Group.Id" name="@CurrentUser.Id" id="subscribe" style="color:white !important" class="btn btn-primary" type="button">
+                                        <i class="fa fa-plus"></i> @L["Subscribe"].Value
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button value="@Model.Group.Id" name="@CurrentUser.Id" id="unsubscribe" style="color:white !important" class="btn-default" type="button">
+                                        <i class="fa fa-close"></i> @L["Unsubscribe"].Value
+                                    </button>
+                                }
+                            </div>
+                        </div>
+
+                        <p class="card-text" style="margin-left: 25px !important; text-align: center;
+                            margin-right: 25px !important; margin-top: 25px !important;">
+                            @Model.Group.TextInformation</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col" style="max-width: 30%;">
+            <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-12">
+                            <div class="card-body">
+                                <h4 class="card-title">@L["Information"]</h4>
+                                <table class="table" style="border-top: 0px !important; margin-bottom: 0px !important;">
+                                    <tbody>
+                                        @*FOLLOWERS*@
+                                        <tr>
+                                            <td style="padding: 0px 7px;">
+                                                <p class="card-text" style="margin-top: 14px !important;">@L["Followers"]</p>
+                                            </td>
+                                            <td style="text-align: right !important; padding: 0px 7px;">
+                                                <p class="card-text" style="margin-top: 14px !important;">@Model.Subscribers.Count</p>
+                                            </td>
+                                        </tr>
+                                        @*PROJECTS*@
+                                        <tr>
+                                            <td style="border-top: 0px !important; padding: 0px 7px;">
+                                                <p class="card-text">@L["Projects"]</p>
+                                            </td>
+                                            <td style="border-top: 0px !important; text-align: right !important; padding: 0px 7px;">
+                                                <p class="card-text">@Model.Projects.Count</p>
+                                            </td>
+                                        </tr>
+                                        @*ARTICLES*@
+                                        <tr>
+                                            <td style="border-top: 0px !important; padding: 0px 7px;">
+                                                <p class="card-text">@L["Articles"]</p>
+                                            </td>
+                                            <td style="border-top: 0px !important; text-align: right !important; padding: 0px 7px;">
+                                                <p class="card-text">@Model.Articles.Count</p>
+                                            </td>
+                                        </tr>
+                                        @*COMMENTS*@
+                                       @* <tr>
+                                            <td style="border-top: 0px !important; padding: 0px 7px;">
+                                                <p class="card-text">@L["Comments"]</p>
+                                            </td>
+                                            <td style="border-top: 0px !important; text-align: right !important; padding: 0px 7px;">
+                                                <p class="card-text"></p>
+                                            </td>
+                                        </tr>*@
+                                        @*DEVELOPER*@
+                                        <tr>
+                                            <td style="border-top: 0px !important; padding: 0px 7px;">
+                                                <p class="card-text">@L["Developer"]</p>
+                                            </td>
+                                            <td style="border-top: 0px !important; text-align: right !important; padding: 0px 7px;">
+                                                <p class="card-text">@Model.Group.Developer</p>
+                                            </td>
+                                        </tr>
+                                        @*WEBSITE*@
+                                        <tr>
+                                            <td style="border-top: 0px !important; padding: 0px 7px;">
+                                                <p class="card-text">@L["Website"]</p>
+                                            </td>
+                                            <td style="border-top: 0px !important; text-align: right !important; padding: 0px 7px;">
+                                                @if(@Model.Group.Website!=null)
+                                                {
+                                                    @if (@Model.Group.Website.Length > 22)
+                                                    {
+                                                        <p class="card-text">
+                                                           <a href="@Model.Group.Website" target="_blank" class="text-primary">
+                                                               @Model.Group.Website.Substring(0, 22).Replace("https://", "")...
+                                                           </a>
+                                                        </p>
+                                                    }
+                                                    else
+                                                    { 
+                                                        <p class="card-text">
+                                                            <a href="@Model.Group.Website" target="_blank" class="text-primary">
+                                                                @Model.Group.Website.Replace("https://", "")
+                                                            </a>
+                                                        </p>
+                                                    }
+                                                }
+                                                else {<p class="card-text">@L["Missing"]</p>}
+                                            </td>
+                                        </tr>
+                                        @*ISSUEYEAR*@
+                                        <tr>
+                                            <td style="border-top: 0px !important; padding: 0px 7px;">
+                                                <p class="card-text">@L["IssueYear"]</p>
+                                            </td>
+                                            <td style="border-top: 0px !important; text-align: right !important; padding: 0px 7px;">
+                                                <p class="card-text">@Model.Group.IssueYear г.</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        @*BUTTONS*@
+        <ul class="nav nav-pills nav-pills-primary" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#link1" role="tablist" aria-expanded="false">
+                    @L["Projects"]
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#link2" role="tablist" aria-expanded="true">
+                    @L["Articles"]
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#link3" role="tablist" aria-expanded="false">
+                    @L["Followers"]
+                </a>
+            </li>
+        </ul>
+
+        @*DATA*@
+        <div class="tab-content tab-space">
+            @*PROJECTS*@
+            <div class="tab-pane active" id="link1" aria-expanded="false">
+                <abp-card style="margin-top: 55px">
+    <abp-card-header style="background: transparent !important">
+        <abp-row>
+            <abp-column size-md="_3">
+                <h2>@L["Projects"]</h2>
+            </abp-column>
+            <abp-column size-md="_9" class="text-right">
+                <div class="dt-buttons btn-group flex-wrap">
+                        <button id="copy-button" data-clipboard-target="#ProjectsTable" class="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <span>@L["Copy"]</span>
+                        </button>
+                        <button id="printTable" class="btn btn-secondary buttons-print" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <span>@L["Print"]</span>
+                        </button>
+                        @*<button  id="NewProjectButton" style="color:white !important" class="btn btn-primary" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <i class="fa fa-plus"></i> @L["CreateProject"].Value
+                        </button>*@
+                    </div>
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+     <abp-card-body>
+         <table id="ProjectsTable" class="table table-striped" style="background: #1D2F5D !important">
+    <thead>
+        <tr>
+            <th>@L["Title"]</th>
+            <th>@L["Views"]</th>
+            <th>@L["Likes"]</th>
+            <th>@L["SavesAmount"]</th>
+            <th>@L["Creator"]</th>
+            <th>@L["Date"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var project in Model.Projects)
+        {
+            <tr>
+                <td><a class="text-primary" href="/projects/@project.Id" target="_blank">@project.Title</a></td>
+                <td><center>@project.Views</center></td>
+                <td><center>@project.Likes</center></td>
+                <td><center>@project.SavesAmount</center></td>
+                <td><a class="text-primary" href="/users/@project.CreatorUserName" target="_blank">@project.CreatorUserName</a></td>
+                <td>@project.CreationTime.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+     </abp-card-body>
+</abp-card>
+            </div>
+
+            @*ARTICLES*@
+            <div class="tab-pane" id="link2" aria-expanded="true">
+                <abp-card style="margin-top: 55px">
+    <abp-card-header style="background: transparent !important">
+        <abp-row>
+            <abp-column size-md="_3">
+                <h2>@L["Articles"]</h2>
+            </abp-column>
+            <abp-column size-md="_9" class="text-right">
+                <div class="dt-buttons btn-group flex-wrap">
+                        <button id="copy-button" data-clipboard-target="#ArticlesTable" class="btn btn-secondary buttons-copy buttons-html5" tabindex="0"
+                        aria-controls="datatable-buttons" type="button">
+                            <span>@L["Copy"]</span>
+                        </button>
+                        <button id="printArticlesTable" class="btn btn-secondary buttons-print" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <span>@L["Print"]</span>
+                        </button>
+                    </div>
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+     <abp-card-body>
+         <table id="ArticlesTable" class="table table-striped" style="background: #1D2F5D !important">
+    <thead>
+        <tr>
+            <th>@L["Title"]</th>
+            <th>@L["Views"]</th>
+            @*<th>@L["Likes"]</th>*@
+            <th>@L["SavesAmount"]</th>
+            <th>@L["Creator"]</th>
+            <th>@L["Date"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var article in Model.Articles)
+        {
+            <tr>
+                <td><a class="text-primary" href="/articles/@article.Slug" target="_blank">@article.Title</a></td>
+                <td><center>0</center></td>
+               @* <td><center>@article.Likes</center></td>*@
+                <td><center>0</center></td>
+                <td><a class="text-primary" href="/users/@article.CreatorUserName" target="_blank">@article.CreatorUserName</a></td>
+                <td>@article.CreationTime.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+     </abp-card-body>
+</abp-card>
+            </div>
+
+            @*FOLLOWERS*@
+            <div class="tab-pane" id="link3" aria-expanded="true">
+                <div class="card" style="">
+                            <div class="card-body">
+                                <form action="#" role="search">
+                                    <div class="input-group" style="margin-bottom: 0 !important">
+                                        <input id="search" name="search" data-toggle="hideseek" data-list=".list" type="text" class="form-control" placeholder="@L["Search"]" style="border-color: white !important">
+                                        <div class="btn-group" style="margin-bottom: 0 !important">
+                                            <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0 !important; padding: 0 !important; width: 100px !important">Поиск</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                <div class="row row-cols-1 row-cols-md-2 g-4 list">
+                     @foreach (var subscriber in Model.Subscribers)
+                     {
+                         
+                             <div class="col-sm-6">
+                                 <a href="/users/@subscriber.CreatorUserName" target="_blank">
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <div class="col-md-3">
+                                            <div class="smallUserBox">
+                                                <img class="card-img" src="@subscriber.CreatorProfilePicture" alt="User cover" style="align-items: center">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <h4 class="card-title">@subscriber.CreatorName</h4>
+                                                    </div>
+                                                </div>
+                                                <p class="card-text" style="margin-bottom: 3px !important;">
+                                                    @subscriber.CreatorUserName
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>
+                            </div> 
+                         
+                     }
+                </div>
+            </div>
+        </div>
+}
+
+<!--   Core JS Files   -->
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>
+<script src="~/scripts/jquery.hideseek.min.js" type="text/javascript"></script>
+
+

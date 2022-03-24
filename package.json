@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@abp/signalr": "^5.1.2"
+  }
+}

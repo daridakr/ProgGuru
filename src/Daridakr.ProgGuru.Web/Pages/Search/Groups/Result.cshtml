@@ -1,0 +1,48 @@
+﻿@page "/search/groups/{searchString}"
+@model Daridakr.ProgGuru.Web.Pages.Search.Groups.ResultModel
+@using Daridakr.ProgGuru.Enums.Projects
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@inject IHtmlLocalizer<ProgGuruResource> L
+@section styles {
+    <abp-style src="/Pages/Index.css" />
+}
+@if (Model.Groups.Count != 0)
+{
+    <div class="wrapper">
+        <div class="content">
+             <h1>@L["SearchResult"]</h1>
+             <div class="row row-cols-1 row-cols-md-2 g-4 list">
+    @foreach (var group in Model.Groups)
+        {
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4 smallGroupBox">
+                            <img class="card-img" src="@group.CoverImagePath" alt="Group cover" style="align-items: center">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h4 class="card-title">@group.Title</h4>
+                                <p class="card-text" style="margin-bottom: 15px !important;">@group.Subtitle</p>
+                                <div class="text-right">
+                                    <a href="/groups/@group.Id" class="btn btn-primary">Перейти</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        }
+</div>
+        </div>
+    </div>
+}
+else
+{
+     <div class="wrapper">
+        <div class="content">
+             <h1>@L["NotFound"]</h1>
+        </div>
+    </div>
+}

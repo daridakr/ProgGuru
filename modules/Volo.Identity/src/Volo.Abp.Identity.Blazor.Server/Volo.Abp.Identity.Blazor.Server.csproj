@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    
+    
+
+    <PropertyGroup><LangVersion>latest</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Volo.Abp.Identity.Blazor\Volo.Abp.Identity.Blazor.csproj" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.Blazor.Server" Version="5.1.2" />
+    </ItemGroup>
+
+</Project>

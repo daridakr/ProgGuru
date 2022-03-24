@@ -1,0 +1,19 @@
+﻿@inject ICurrentUser CurrentUser
+@inject IHtmlLocalizer<CmsKitResource> L
+@using Volo.Abp.Users
+@using Volo.CmsKit.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@model Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.ReactionSelection.ReactionSelectionViewComponent.ReactionSelectionViewModel
+
+<div class="row row">
+        <div class="col">
+            <span class="cms-reaction-area" data-entity-type="@Model.EntityType" data-entity-id="@Model.EntityId" style="margin-right: 15px !important;">
+
+                @foreach (var reaction in Model.Reactions.Where(r => r.Count > 0))
+                {
+                   <i class="@reaction.Icon" style="margin-bottom:0 !important"></i>
+                   <small class="text-muted" style="opacity: .45;margin-bottom:0 !important">@(reaction.Count)</small>
+                }
+            </span>
+        </div>
+    </div>
