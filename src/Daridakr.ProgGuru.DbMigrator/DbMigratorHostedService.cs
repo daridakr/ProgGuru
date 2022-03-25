@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Daridakr.ProgGuru.Data;
 using Serilog;
 using Volo.Abp;
+using System;
 
 namespace Daridakr.ProgGuru.DbMigrator;
 
@@ -24,9 +25,11 @@ public class DbMigratorHostedService : IHostedService
     {
         using (var application = await AbpApplicationFactory.CreateAsync<ProgGuruDbMigratorModule>(options =>
         {
-           options.Services.ReplaceConfiguration(_configuration);
-           options.UseAutofac();
-           options.Services.AddLogging(c => c.AddSerilog());
+            options.UseAutofac();
+            options.Services.AddLogging(c => c.AddSerilog());
+
+            //options.Services.ReplaceConfiguration(_configuration);
+            options.Services.ReplaceConfiguration(BuildConfiguration());
         }))
         {
             await application.InitializeAsync();
@@ -40,6 +43,24 @@ public class DbMigratorHostedService : IHostedService
 
             _hostApplicationLifetime.StopApplication();
         }
+    }
+
+    private static IConfiguration BuildConfiguration()
+    {
+        var configurationBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+
+        // Extra code block to make it possible to read from appsettings.Staging.json
+        //var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        //if (environmentName == "Staging")
+        //{
+        //    configurationBuilder.AddJsonFile($"appsettings.{environmentName}.json", true);
+        //}
+
+        configurationBuilder.AddJsonFile($"appsettings.Staging.json", true);
+
+        return configurationBuilder
+            .AddEnvironmentVariables()
+            .Build();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
