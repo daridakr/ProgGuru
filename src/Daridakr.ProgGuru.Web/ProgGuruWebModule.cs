@@ -96,6 +96,11 @@ namespace Daridakr.ProgGuru.Web;
             ServiceDescriptor.Transient<Volo.Abp.Identity.IdentityUserAppService, UserAppService>()
         );
 
+        context.Services.AddAntiforgery(options =>
+        {
+            options.SuppressXFrameOptionsHeader = true;
+        });
+
         //Configure<AbpBlobStoringOptions>(options =>
         //{
         //    options.Containers.ConfigureDefault(container =>
