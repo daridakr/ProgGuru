@@ -45,10 +45,4 @@
     <ProjectReference Include="..\..\..\..\src\Daridakr.ProgGuru.Domain.Shared\Daridakr.ProgGuru.Domain.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Pages\Index.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
