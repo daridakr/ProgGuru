@@ -1,0 +1,84 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared.Pages.Shared.Components.AbpPageToolbar
+@using Volo.Abp.Identity
+@using Volo.Abp.Identity.Localization
+@using Daridakr.ProgGuru.Localization
+@using Volo.Abp.Identity.Web.Navigation
+@using Volo.Abp.Identity.Web.Pages.Identity.Users
+@using Volo.Abp.Users
+@model IndexModel
+@inject IHtmlLocalizer<IdentityResource> L
+@inject IHtmlLocalizer<ProgGuruResource> PL
+@inject IAuthorizationService Authorization
+@inject ICurrentUser CurrentUser
+@inject IPageLayout PageLayout
+@{
+    PageLayout.Content.Title = L["Users"].Value;
+    PageLayout.Content.BreadCrumb.Add(L["Menu:IdentityManagement"].Value);
+    PageLayout.Content.MenuItemName = IdentityMenuNames.Users;
+}
+@section styles {
+    <abp-style src="/Pages/Dropdown.css" />
+    <abp-style-bundle name="@typeof(IndexModel).FullName">
+        <abp-style src="/Pages/AbpPermissionManagement/permission-management-modal.css" />
+    </abp-style-bundle>
+}
+@section scripts {
+    <abp-script-bundle name="@typeof(IndexModel).FullName">
+        <abp-script src="/client-proxies/identity-proxy.js" />
+        <abp-script src="/Pages/AbpPermissionManagement/permission-management-modal.js" />
+        <abp-script src="/Pages/identity/users/index.js" />
+    </abp-script-bundle>
+}
+
+@if (CurrentUser.IsInRole("admin"))
+{
+    <div class="wrapper">
+        <div class="content">
+            <abp-card id="IdentityUsersWrapper">
+                <abp-card-header>
+                    <abp-row>
+                        <abp-column size-md="_6">
+                            <abp-card-title>@L["Users"]</abp-card-title>
+                        </abp-column>
+                        <abp-column size-md="_6" class="text-end">
+                            @await Component.InvokeAsync(typeof(AbpPageToolbarViewComponent), new { pageName = typeof(IndexModel).FullName })
+                        </abp-column>
+                    </abp-row>
+                </abp-card-header>
+                <abp-card-body>
+                    <abp-table striped-rows="true" class="nowrap"></abp-table>
+                </abp-card-body>
+            </abp-card>
+        </div>
+    </div>
+}
+else
+{
+    <div class="wrapper">
+        <div class="content" style="margin-top:250px">
+           <center>
+               <h1 class="title" style="font-size:100px">403</h1>
+               <p>@PL["PermissionError"]</p>
+               <a href="/" class="btn btn-primary" role="button">@PL["BackToHome"]</a>
+           </center>
+        </div>
+    </div>
+}
+
+<!--   Core JS Files   -->
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>

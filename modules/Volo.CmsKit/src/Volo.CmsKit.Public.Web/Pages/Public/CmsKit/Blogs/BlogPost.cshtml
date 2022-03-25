@@ -1,0 +1,157 @@
+﻿@page "/articles/{blogPostSlug}"
+
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.Blogs.BlogPostComment
+@using Volo.CmsKit.Public.Web.Pages
+@using Volo.Abp.GlobalFeatures
+@using Volo.CmsKit.GlobalFeatures
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.ReactionSelection
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.Rating
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.Tags
+@using Volo.CmsKit.Public.Web.Renderers
+@using Volo.Abp.AspNetCore.Mvc.UI.Packages.HighlightJs
+
+@inherits CmsKitPublicPageBase
+
+@model Volo.CmsKit.Public.Web.Pages.Public.CmsKit.Blogs.BlogPostModel
+
+@inject IMarkdownToHtmlRenderer MarkdownRenderer
+
+@section styles{
+<abp-abp-style-bundle>
+    <abp-style src="/Pages/Public/CmsKit/Blogs/blogPost.css" />
+    <abp-style type="typeof(HighlightJsStyleContributor)" />
+</abp-abp-style-bundle>
+}
+
+@section scripts{
+<abp-script-bundle>
+    <abp-script type="typeof(HighlightJsScriptContributor)" />
+    <abp-script src="/Pages/Public/CmsKit/highlightOnLoad.js" />
+</abp-script-bundle>
+}
+
+@{
+    string dummyImageSource = "https://dummyimage.com/1280x720/a3a3a3/fff.png?text=" + Model.BlogPost.Title;
+}
+
+<abp-card class="mb-4">
+    @if (@Model.BlogPost.CoverImagePath != null)
+                        {
+                            <img src="@Model.BlogPost.CoverImagePath" class="card-img-top" onerror="this.src='@dummyImageSource'" />
+                        }
+                        else
+                        {
+                            <img src="@dummyImageSource" class="card-img-top" />
+                        }
+    
+    <abp-card-body>
+        <abp-row>
+            <div class="col-lg-8 col-md-10 mx-auto pb-4">
+                <h1 class="mt-lg-4 mt-md-3">@Model.BlogPost.Title</h1>
+                <p class="mb-lg-5 mb-md-3">
+                    <span class="font-weight-bold">@@@Model.BlogPost.CreatorUserName</span>
+                    <small style="opacity:.65;">@Model.BlogPost.CreationTime</small>
+                </p>
+
+                @if(!Model.BlogPost.Content.IsNullOrEmpty())
+                {
+                    @Html.Raw(await MarkdownRenderer.RenderAsync(Model.BlogPost.Content))
+                }
+
+                <p class="mb-3">
+                    @if (Model.BlogPost.LastModificationTime != null)
+                    {
+                        <small style="opacity:.65;">@L["LastModification"].Value : @Model.BlogPost.LastModificationTime</small>
+                    }
+                </p>
+                <hr />
+
+                @if (GlobalFeatureManager.Instance.IsEnabled<TagsFeature>())
+                {
+                    if (Model.TagsFeature?.IsEnabled == true)
+                    {
+                        @await Component.InvokeAsync(typeof(TagViewComponent), new
+                {
+                entityType = Volo.CmsKit.Blogs.BlogPostConsts.EntityType,
+                entityId = Model.BlogPost.Id.ToString()
+                })
+                    }
+                }
+            </div>
+        </abp-row>
+
+        <abp-row class="row">
+        <div style="margin-top: 26px !important;margin-left: 66px !important;margin-right: -15px !important;">
+            <div class="abp-widget-wrapper">
+                <div class="row row">
+                    <i class="fas fa-eye" style="margin-bottom:0 !important"></i>
+                    <p style="font-size:11px;color:#525f7f;margin-bottom:0 !important">⠀0</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 26px !important;margin-left: 66px !important;margin-right: 15px !important;">
+            <div class="abp-widget-wrapper">
+                <div class="row row">
+                    <i class="fas fa-comment" style="margin-bottom:0 !important"></i>
+                    <p style="font-size:11px;color:#525f7f;margin-bottom:0 !important">⠀@Model.BlogPost.CommentCount</p>
+                </div>
+            </div>
+        </div>
+            <abp-column size-lg="_1" size-md="_12"> ⠀⠀
+                @if (GlobalFeatureManager.Instance.IsEnabled<ReactionsFeature>())
+                {
+                    if (Model.ReactionsFeature?.IsEnabled == true)
+                    {
+                        @await Component.InvokeAsync(typeof(ReactionSelectionViewComponent), new
+                        {
+                        entityType = Volo.CmsKit.Blogs.BlogPostConsts.EntityType,
+                        entityId = Model.BlogPost.Id.ToString()
+                        })
+                    }
+                }
+            </abp-column>
+            <div style="margin-top: 26px !important;margin-right: 15px !important;">
+            <div class="abp-widget-wrapper">
+                <div class="row row">
+                    <i class="fas fa-bookmark" style="margin-bottom:0 !important"></i>
+                    <p style="font-size:11px;color:#525f7f;margin-bottom:0 !important">⠀</p>
+                </div>
+            </div>
+        </div>
+            <abp-column size-lg="_9" size-md="_12" class="text-right">
+                @if (GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
+                {
+                    if (Model.RatingsFeature?.IsEnabled == true)
+                    {
+                        @await Component.InvokeAsync(typeof(RatingViewComponent), new
+                        {
+                        entityType = Volo.CmsKit.Blogs.BlogPostConsts.EntityType,
+                        entityId = Model.BlogPost.Id.ToString()
+                        })
+                    }
+                }
+            </abp-column>
+        </abp-row>
+    </abp-card-body>
+</abp-card>
+
+@if (GlobalFeatureManager.Instance.IsEnabled<CommentsFeature>())
+{
+    if (Model.CommentsFeature?.IsEnabled == true)
+    {
+        @await Component.InvokeAsync(typeof(DefaultBlogPostCommentViewComponent), new
+        {
+            entityType = Volo.CmsKit.Blogs.BlogPostConsts.EntityType,
+            entityId = Model.BlogPost.Id.ToString()
+        })
+    }
+}
+
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>
+<script src="~/scripts/plugins/tagify.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/tagify.polyfills.min.js" type="text/javascript"></script>

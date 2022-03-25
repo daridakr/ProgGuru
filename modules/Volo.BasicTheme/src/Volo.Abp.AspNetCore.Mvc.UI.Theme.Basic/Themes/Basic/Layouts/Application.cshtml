@@ -1,0 +1,124 @@
+﻿@using Volo.Abp.AspNetCore.Mvc.UI.Components.LayoutHook
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Themes.Basic.Components.MainNavbar
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Themes.Basic.Components.PageAlerts
+@using Volo.Abp.AspNetCore.Mvc.UI.Theming
+@using Volo.Abp.AspNetCore.Mvc.UI.Widgets.Components.WidgetScripts
+@using Volo.Abp.AspNetCore.Mvc.UI.Widgets.Components.WidgetStyles
+@using Volo.Abp.Localization
+@using Volo.Abp.Ui.Branding
+@inject IBrandingProvider BrandingProvider
+@inject IPageLayout PageLayout
+@{
+    Layout = null;
+    var containerClass = ViewBag.FluidLayout == true ? "container-fluid" : "container"; //TODO: Better and type-safe options
+
+    var pageTitle = ViewBag.Title == null ? BrandingProvider.AppName : ViewBag.Title; //TODO: Discard to get from Title
+
+    if (PageLayout.Content.Title != null)
+    {
+        if (!string.IsNullOrWhiteSpace(pageTitle))
+        {
+            pageTitle = " | " + pageTitle;
+        }
+
+        pageTitle = PageLayout.Content.Title + pageTitle;
+    }
+
+    var rtl = CultureHelper.IsRtl ? "rtl" : string.Empty;
+}
+
+<!DOCTYPE html>
+
+<html lang="@CultureInfo.CurrentCulture.Name" dir="@rtl">
+<head>
+    @await Component.InvokeLayoutHookAsync(LayoutHooks.Head.First, StandardLayouts.Application)
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>@pageTitle</title>
+
+    <abp-style-bundle name="@BasicThemeBundles.Styles.Global" />
+
+    @await Component.InvokeAsync(typeof(WidgetStylesViewComponent))
+
+    @await RenderSectionAsync("styles", false)
+
+    @await Component.InvokeLayoutHookAsync(LayoutHooks.Head.Last, StandardLayouts.Application)
+
+    <script>
+        function up() {
+            var a = document.documentElement.scrollTop != undefined ? document.documentElement || document.body
+            a.scrollTop = 0;
+        }
+    </script>
+</head>
+<body class="abp-application-layout bg-light @rtl">
+    @await Component.InvokeLayoutHookAsync(LayoutHooks.Body.First, StandardLayouts.Application)
+
+    @(await Component.InvokeAsync<MainNavbarViewComponent>())
+
+    <div class="@containerClass">
+        @(await Component.InvokeAsync<PageAlertsViewComponent>())
+        <div id="AbpContentToolbar">
+            <div class="text-end mb-2">
+                @RenderSection("content_toolbar", false)
+            </div>
+        </div>
+        @await Component.InvokeLayoutHookAsync(LayoutHooks.PageContent.First, StandardLayouts.Application)
+        @RenderBody()
+        @await Component.InvokeLayoutHookAsync(LayoutHooks.PageContent.Last, StandardLayouts.Application)
+    </div>
+
+    <abp-script-bundle name="@BasicThemeBundles.Scripts.Global" />
+
+    <script src="~/Abp/ApplicationConfigurationScript"></script>
+    <script src="~/Abp/ServiceProxyScript"></script>
+
+    @await Component.InvokeAsync(typeof(WidgetScriptsViewComponent))
+
+    @await RenderSectionAsync("scripts", false)
+
+    @await Component.InvokeLayoutHookAsync(LayoutHooks.Body.Last, StandardLayouts.Application)
+
+    <!-- Footer -->
+    <footer class="text-center text-white" style="background-color: #2A3F83 !important">
+        <div class="container pb-0">
+            <section style="padding: 0px 0 !important;">
+                <a href="#">
+                    <i class="fas fa-chevron-up" onclick="up()" style="float: right;
+                    margin-top:13px;font-size:30px;color:#212529 !important;"></i>
+                </a>
+                <center>
+                    <a class="btn btn-link btn-floating btn-lg text-dark" href="https://facebook.com/daridakr"
+                    target="_blank" role="button" data-mdb-ripple-color="dark">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+
+                    <a class="btn btn-link btn-floating btn-lg text-dark" href="https://github.com/daridakr"
+                    target="_blank" role="button" data-mdb-ripple-color="dark">
+                        <i class="fab fa-github"></i>
+                    </a>
+
+                    <a class="btn btn-link btn-lg text-dark" href="https://www.instagram.com/dashkrv/"
+                    target="_blank" role="button" data-mdb-ripple-color="dark">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+
+                    <a class="btn btn-link btn-floating btn-lg text-dark" href="https://www.youtube.com/channel/UC1LQPG64CmNDyv7Q5k931AQ"
+                    target="_blank" role="button" data-mdb-ripple-color="dark">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </center>
+            </section>
+        </div>
+        <div class="text-center p-3" style="background-color: #1D2F5D !important;">
+            © 2022 Copyright:
+            <a class="text-white" href="#">Daridakr</a>
+        </div>
+    </footer>
+</body>
+</html>

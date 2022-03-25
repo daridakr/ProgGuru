@@ -1,0 +1,117 @@
+﻿@page "/search/articles/{searchString}"
+@model Daridakr.ProgGuru.Web.Pages.Search.Articles.ResultModel
+@using Daridakr.ProgGuru.Enums.Projects
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.Rating
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.ReactionSelection
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.Tags
+@inject IHtmlLocalizer<ProgGuruResource> L
+@section styles {
+    <abp-style src="/Pages/Index.css" />
+}
+@if (Model.Articles.Count != 0)
+{
+    <div class="wrapper">
+        <div class="content">
+             <h1>@L["SearchResult"]</h1>
+             <div class="row row-cols-1 row-cols-md-2 g-4 list">
+    @foreach (var article in Model.Articles)
+        {
+            <div class="col-sm-6 articles-wrapper">
+                <div class="card mb-3">
+                    <div class="card-body">
+                                <h4 class="card-title" style="margin-bottom: 5px !important;">
+                                    <a href="/groups/@article.GroupId" target="_blank" class="text-primary">
+                                        @article.GroupTitle
+                                    </a> &#10149; <a href="/articles/@article.Slug">@article.Title</a>
+                                </h4>
+                                <div style="margin-bottom: 5px !important;">
+                                    <div class="row">
+                                         <div class="col-sm-6">
+                                             <div class="row" style="margin-left:0px !important;margin-bottom:5px !important">
+                                                <a href="/users/@article.CreatorUserName">
+                                                    <div class="userCircle">
+                                                        <img class="rounded-circle" style="width: 40px;"
+                                                        src="@article.CreatorProfilePicture"
+                                                        data-holder-rendered="true">
+                                                    </div>
+                                                </a>
+                                                <p style="margin-bottom:5px !important">
+                                                 <a href="/users/@article.CreatorUserName" class="text-primary">⠀@article.CreatorName</a><br>
+                                                ⠀@article.CreationTime.ToShortDateString()
+                                                </p>
+                                             </div>
+                                         </div>
+                                    <div class="col-sm-6">
+                                    <div class="text-right">
+                                    <small class="count h2">
+                                        @await Component.InvokeAsync(typeof(RatingViewComponent), new
+                                        {
+                                            entityType = Volo.CmsKit.Blogs.BlogPostConsts.EntityType,
+                                            entityId = @article.Id.ToString(),
+                                            viewType = "Display"
+                                        })
+                                    </small>
+                                    </div>
+                                    </div>
+                                    
+                                    </div>
+                                   
+                                    
+                                </div>
+                                <div style="margin-bottom: 10px !important">
+                                    @await Component.InvokeAsync(typeof(TagViewComponent), new
+                {
+                entityType = Volo.CmsKit.Blogs.BlogPostConsts.EntityType,
+                entityId = article.Id.ToString()
+                })
+                                </div>
+                                <p align="justify" style="margin-bottom: 0px !important;">@article.ShortDescription</p>
+                                
+                    </div>
+                    <div class="smallProjectBox">
+                        @{
+                            string dummyImageSource = "https://dummyimage.com/1280x720/a3a3a3/fff.png?text=" + article.Title;
+                        }
+                        @if (article.CoverImagePath != null)
+                        {
+                            <img src="@article.CoverImagePath" class="card-img-top" onerror="this.src='@dummyImageSource'" />
+                        }
+                        else
+                        {
+                            <img src="@dummyImageSource" class="card-img-top" />
+                        }
+                    </div>
+                    <div class="row" style="margin-top: 15px !important;margin-left:15px;margin-bottom:0 !important">
+                        @await Component.InvokeAsync(typeof(ReactionSelectionViewComponent), new
+                        {
+                        entityType = Volo.CmsKit.Blogs.BlogPostConsts.EntityType,
+                        entityId = article.Id.ToString(),
+                        viewType = "Display"
+                        })
+
+                        <i class="fas fa-eye" style="margin-bottom:0 !important"></i>
+                        <p style="font-size:11px;color:#525f7f;margin-bottom:0 !important">⠀0 </p>
+                        ⠀⠀
+                        <i class="fas fa-comment" style="margin-bottom:0 !important"></i>
+                        <p style="font-size:11px;color:#525f7f;margin-bottom:0 !important">⠀@article.CommentCount</p>
+                        ⠀⠀
+                        <i class="fas fa-bookmark" style="margin-bottom:0 !important"></i>
+                        <p style="font-size:11px;color:#525f7f;margin-bottom:0 !important">⠀</p>
+                    </div>
+                </div>
+            </div> 
+        }
+</div>
+        </div>
+    </div>
+}
+else
+{
+     <div class="wrapper">
+        <div class="content">
+             <h1>@L["NotFound"]</h1>
+        </div>
+    </div>
+}

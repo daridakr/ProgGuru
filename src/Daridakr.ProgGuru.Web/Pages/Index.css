@@ -1,0 +1,115 @@
+﻿body {
+    font-family: 'Noto Sans' !important;
+    overflow-x: hidden !important;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Sans' !important;
+}
+
+.bg-light {
+    background-color: #030F39 !important;
+}
+
+.navbar.bg-dark {
+    background: #2A3F83 !important;
+}
+
+.card-body {
+    background-color: #1D2F5D !important;
+}
+
+.card {
+    background: #1D2F5D !important;
+    border-radius: .4285rem !important;
+    border: .4285rem solid #1D2F5D !important;
+}
+
+.form-control {
+    border-color: white;
+}
+
+.form-check .form-check-sign:after {
+    content: "✓" !important;
+}
+
+.align-items-end {
+    align-items: center !important;
+}
+
+.logo {
+   
+    width: 390px;
+    height: 150px;
+    display: block;
+    text-indent: -9999px;
+    margin-bottom: 35px !important;
+}
+
+.mb-40 {
+    margin-bottom: 40px !important;
+}
+
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+p {
+    margin-top: 0 !important;
+    margin-bottom: 25px !important;
+}
+
+.full {
+    width: 100% !important;
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+@media (max-width: 768px) {
+    .breadcrumbs .d-flex {
+        display: block !important;
+    }
+
+    .breadcrumbs ol {
+        display: block !important;
+    }
+
+        .breadcrumbs ol li {
+            display: inline-block !important;
+        }
+}
+
+/*--------------------------------------------------------------
+# Sections General
+--------------------------------------------------------------*/
+section {
+    padding: 60px 0 !important;
+    overflow: hidden !important;
+}
+
+/*--------------------------------------------------------------
+# Chat
+--------------------------------------------------------------*/
+
+/*#MessageList {
+    border: 1px solid gray;
+    height: 400px;
+    overflow: auto;
+    list-style: none;
+    padding-left: 0;
+    padding: 10px;
+}
+
+#TargetUser {
+    width: 100%;
+}
+
+#Message {
+    width: 100%;
+}
+*/

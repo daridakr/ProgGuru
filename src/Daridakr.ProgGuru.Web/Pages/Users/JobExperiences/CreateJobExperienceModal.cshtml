@@ -1,0 +1,75 @@
+﻿@page
+@using Daridakr.ProgGuru.Enums.Users
+@using Daridakr.ProgGuru.Localization
+@using Microsoft.Extensions.Localization
+@using Daridakr.ProgGuru.Web.Pages.Users.JobExperiences
+@using Volo.Abp.Users
+@model CreateJobExperienceModalModel
+@inject IStringLocalizer<ProgGuruResource> L
+@inject ICurrentUser CurrentUser
+@{
+    Layout = null;
+}
+
+<form asp-page="/Users/JobExperiences/CreateJobExperienceModal">
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@L["NewJobExperience"].Value</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <abp-input asp-for="JobExperience.CreatorId" type="hidden" value="@CurrentUser.Id"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="JobExperience.Position"></label>
+                        <input asp-for="JobExperience.Position" class="form-control" style="border-color: #1D2F5D !important; color: #1D2F5D !important" type="text" list="cars" />
+                        <datalist id="cars">
+                            @foreach(var s in Model.Specializations)
+                            {
+                                <option>@s.Text</option>
+                            }
+                        </datalist>
+                        <span asp-validation-for="JobExperience.Position" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <abp-input asp-for="JobExperience.CompanyName" type="text" class="form-control"
+                        style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <abp-select asp-for="JobExperience.PositionCategory" asp-items="Html.GetEnumSelectList<UserCategory>()" class="form-control"
+                        style="margin-bottom: 0px;background-color: rebeccapurple;" />
+                    </div>
+                    <div class="form-group mb-3">
+                        <abp-input asp-for="JobExperience.Location" type="text" class="form-control"
+                        style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <abp-input asp-for="JobExperience.BeginningDate" class="form-control"
+                        style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                    </div>
+                     <div class="form-group mb-3">
+                        <abp-input asp-for="JobExperience.EndDate" class="form-control"
+                        style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@L["Create"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@L["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>
+<script src="~/scripts/plugins/tagify.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/tagify.polyfills.min.js" type="text/javascript"></script>

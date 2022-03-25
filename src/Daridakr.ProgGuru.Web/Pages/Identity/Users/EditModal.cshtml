@@ -1,0 +1,197 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Volo.Abp.Identity.Localization
+@using Volo.Abp.Identity.Web.Pages.Identity.Users
+@using Volo.Abp.Localization
+@using Volo.Abp.ObjectExtending
+@using Volo.Abp.Data
+@model EditModalModel
+@inject IHtmlLocalizer<IdentityResource> L
+@inject IStringLocalizerFactory StringLocalizerFactory
+@{
+    Layout = null;
+}
+
+<form method="post" asp-page="/Identity/Users/EditModal">
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@L["Edit"].Value</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-pills nav-pills-primary" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#link1" role="tablist" aria-expanded="true">
+                            @L["UserInformations"].Value
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#link2" role="tablist" aria-expanded="false">
+                            @L["Roles"].Value
+                            </a>
+                        </li>
+                    </ul>
+
+                    @*DATA*@
+                    <div class="tab-content tab-space">
+                        <div class="tab-pane active" id="link1" aria-expanded="true">
+                            <input asp-for="UserInfo.Id" />
+                            <input asp-for="UserInfo.ConcurrencyStamp" />
+                            <div class="form-group mb-3">
+                                <abp-input asp-for="UserInfo.UserName" type="text" class="form-control"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                            </div>
+                            <div class="form-group mb-3">
+                                <abp-input asp-for="UserInfo.Name" class="form-control"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                            </div>
+                            <div class="form-group mb-3">
+                                <abp-input asp-for="UserInfo.Surname" class="form-control"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                            </div>
+                            <div class="form-group mb-3">
+                                <abp-input asp-for="UserInfo.Password" class="form-control"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                            </div>
+                            <div class="form-group mb-3">
+                                <abp-input asp-for="UserInfo.Email" class="form-control"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                            </div>
+                            <div class="form-group mb-3">
+                                <abp-input asp-for="UserInfo.PhoneNumber" class="form-control"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                            </div>
+                            <div class="form-group mb-3">
+                                <abp-input asp-for="UserInfo.IsActive" class="form-control"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                            </div>
+                            <div class="form-group mb-3">
+                                <abp-input asp-for="UserInfo.LockoutEnabled" class="form-control"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                            </div>
+                            @foreach (var propertyInfo in ObjectExtensionManager.Instance.GetProperties<EditModalModel.UserInfoViewModel>())
+                        {
+                            if (!propertyInfo.Name.EndsWith("_Text"))
+                            {
+                                if (propertyInfo.Type.IsEnum || !propertyInfo.Lookup.Url.IsNullOrEmpty())
+                                {
+                                    if (propertyInfo.Type.IsEnum)
+                                    {
+                                        Model.UserInfo.ExtraProperties.ToEnum(propertyInfo.Name, propertyInfo.Type);
+                                    }
+                                    <abp-select asp-for="UserInfo.ExtraProperties[propertyInfo.Name]"
+                                                label="@propertyInfo.GetLocalizedDisplayName(StringLocalizerFactory)"
+                                                autocomplete-api-url="@propertyInfo.Lookup.Url"
+                                                autocomplete-selected-item-name="@Model.UserInfo.GetProperty(propertyInfo.Name+"_Text")"
+                                                autocomplete-selected-item-value="@Model.UserInfo.GetProperty(propertyInfo.Name)"
+                                                autocomplete-filter-param-name="@propertyInfo.Lookup.FilterParamName"
+                                                autocomplete-items-property-name="@propertyInfo.Lookup.ResultListPropertyName"
+                                                autocomplete-display-property-name="@propertyInfo.Lookup.DisplayPropertyName"
+                                                autocomplete-value-property-name="@propertyInfo.Lookup.ValuePropertyName"></abp-select>
+                                }
+                                else
+                                {
+                                    <abp-input type="@propertyInfo.GetInputType()"
+                                            asp-for="UserInfo.ExtraProperties[propertyInfo.Name]"
+                                            label="@propertyInfo.GetLocalizedDisplayName(StringLocalizerFactory)"
+                                            asp-format="@propertyInfo.GetInputFormatOrNull()"
+                                            value="@propertyInfo.GetInputValueOrNull(Model.UserInfo.GetProperty(propertyInfo.Name))" />
+                                }
+                            }
+                        }
+                        </div>
+                        <div class="tab-pane" id="link2" aria-expanded="false">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@L["Save"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@L["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<abp-modal>
+        <abp-modal-header title="@L["Edit"].Value"></abp-modal-header>
+        <abp-modal-body>
+            <abp-tabs name="create-user-modal-tabs">
+                <abp-tab title="@L["UserInformations"].Value">
+                    <div class="mt-3" >
+                        <input asp-for="UserInfo.Id" />
+                        <input asp-for="UserInfo.ConcurrencyStamp" />
+                        <abp-input asp-for="UserInfo.UserName" />
+                        <abp-input asp-for="UserInfo.Name" />
+                        <abp-input asp-for="UserInfo.Surname" />
+                        <abp-input asp-for="UserInfo.Password" />
+                        <abp-input asp-for="UserInfo.Email" />
+                        <abp-input asp-for="UserInfo.PhoneNumber" />
+                        <abp-input asp-for="UserInfo.IsActive" />
+                        <abp-input asp-for="UserInfo.LockoutEnabled" />
+
+                        @foreach (var propertyInfo in ObjectExtensionManager.Instance.GetProperties<EditModalModel.UserInfoViewModel>())
+                        {
+                            if (!propertyInfo.Name.EndsWith("_Text"))
+                            {
+                                if (propertyInfo.Type.IsEnum || !propertyInfo.Lookup.Url.IsNullOrEmpty())
+                                {
+                                    if (propertyInfo.Type.IsEnum)
+                                    {
+                                        Model.UserInfo.ExtraProperties.ToEnum(propertyInfo.Name, propertyInfo.Type);
+                                    }
+                                    <abp-select asp-for="UserInfo.ExtraProperties[propertyInfo.Name]"
+                                                label="@propertyInfo.GetLocalizedDisplayName(StringLocalizerFactory)"
+                                                autocomplete-api-url="@propertyInfo.Lookup.Url"
+                                                autocomplete-selected-item-name="@Model.UserInfo.GetProperty(propertyInfo.Name+"_Text")"
+                                                autocomplete-selected-item-value="@Model.UserInfo.GetProperty(propertyInfo.Name)"
+                                                autocomplete-filter-param-name="@propertyInfo.Lookup.FilterParamName"
+                                                autocomplete-items-property-name="@propertyInfo.Lookup.ResultListPropertyName"
+                                                autocomplete-display-property-name="@propertyInfo.Lookup.DisplayPropertyName"
+                                                autocomplete-value-property-name="@propertyInfo.Lookup.ValuePropertyName"></abp-select>
+                                }
+                                else
+                                {
+                                    <abp-input type="@propertyInfo.GetInputType()"
+                                            asp-for="UserInfo.ExtraProperties[propertyInfo.Name]"
+                                            label="@propertyInfo.GetLocalizedDisplayName(StringLocalizerFactory)"
+                                            asp-format="@propertyInfo.GetInputFormatOrNull()"
+                                            value="@propertyInfo.GetInputValueOrNull(Model.UserInfo.GetProperty(propertyInfo.Name))" />
+                                }
+                            }
+                        }
+                    </div>
+                </abp-tab>
+                <abp-tab title="@L["Roles"].Value">
+                    <div class="mt-3" >
+                        @for (var i = 0; i < Model.Roles.Length; i++)
+                        {
+                            var role = Model.Roles[i];
+                            <abp-input abp-id-name="@Model.Roles[i].IsAssigned" asp-for="@role.IsAssigned" label="@role.Name" />
+                            <input abp-id-name="@Model.Roles[i].Name" asp-for="@role.Name" />
+                        }
+                    </div>
+                </abp-tab>
+            </abp-tabs>
+        </abp-modal-body>
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
+    </abp-modal>*@
+</form>
+
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>

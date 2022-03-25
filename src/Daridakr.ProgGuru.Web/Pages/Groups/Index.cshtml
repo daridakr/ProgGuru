@@ -1,0 +1,112 @@
+﻿@page
+@using Daridakr.ProgGuru.Localization
+@using Daridakr.ProgGuru.Permissions
+@using Daridakr.ProgGuru.Web.Pages.Groups
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.Users
+@inject IStringLocalizer<ProgGuruResource> L
+@inject IAuthorizationService AuthorizationService
+@inject ICurrentUser CurrentUser
+@model IndexModel
+@section styles {
+    <abp-style src="/Pages/Index.css" />
+}
+@section scripts
+{
+    <abp-script src="/Pages/Groups/Index.js" />
+}
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
+
+@if (CurrentUser.IsInRole("admin"))
+{
+    <div class="wrapper">
+    <div class="content">
+<abp-card style="margin-top: 55px">
+    <abp-card-header style="background: transparent !important">
+        <abp-row>
+            <abp-column size-md="_3">
+                <h2>@L["Groups"]</h2>
+            </abp-column>
+            <abp-column size-md="_9" class="text-right">
+                @if (await AuthorizationService
+                   .IsGrantedAsync(ProgGuruPermissions.Groups.Create))
+                {
+                    <div class="dt-buttons btn-group flex-wrap">
+                        <button id="copy-button" data-clipboard-target="#GroupsTable" class="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <span>@L["Copy"]</span>
+                        </button>
+                        <button id="printTable" class="btn btn-secondary buttons-print" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <span>@L["Print"]</span>
+                        </button>
+                        <button  id="NewGroupButton" style="color:white !important" class="btn btn-primary" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <i class="fa fa-plus"></i> @L["NewGroup"].Value
+                        </button>
+                    </div>              
+                }
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+     <abp-card-body>
+         <table id="GroupsTable" class="table table-striped" style="background: #1D2F5D !important">
+    <thead>
+        <tr>
+            <th>@L["Actions"]</th>
+            <th>@L["Title"]</th>
+            <th>@L["Subtitle"]</th>
+            <th class="text-right">@L["Developer"]</th>
+            <th class="text-right">@L["CreationTime"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var group in Model.Groups)
+        {
+            <tr>
+                <td>
+                    <button value="@group.Id" name="@group.Title" id="DeleteGroupButton" style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                             <i class="fa fa-close"></i>
+                    </button>
+                    <button value="@group.Id" id="UpdateGroupButton" style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                             <i class="fa fa-pencil"></i>
+                    </button>
+                </td>
+                <td>@group.Title</td>
+                <td>@group.Subtitle</td>
+                <td>@group.Developer</td>
+                <td>@group.CreationTime</td>
+            </tr>
+        }
+    </tbody>
+</table>
+     </abp-card-body>
+</abp-card>
+    </div>
+</div>
+}
+else
+{
+    <div class="wrapper">
+        <div class="content" style="margin-top:250px">
+           <center>
+               <h1 class="title" style="font-size:100px">403</h1>
+               <p>@L["PermissionError"]</p>
+               <a href="/" class="btn btn-primary" role="button">@L["BackToHome"]</a>
+           </center>
+        </div>
+    </div>
+}
+
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>

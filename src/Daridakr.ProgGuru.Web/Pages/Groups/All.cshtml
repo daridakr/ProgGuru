@@ -1,0 +1,71 @@
+﻿@page
+@model Daridakr.ProgGuru.Web.Pages.Groups.AllModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@inject IHtmlLocalizer<ProgGuruResource> L
+@section styles {
+    <abp-style src="/Pages/Index.css" />
+}
+@*@section scripts {
+    <abp-script src="/Pages/Groups/All.js" />
+}*@
+
+<h1>@L["Groups"]</h1>
+<div class="card" style="">
+        <div class="card-body">
+            <form action="#" role="search">
+                <div class="input-group" style="margin-bottom: 0 !important">
+                    <input id="search" class="form-control" name="search" placeholder="@L["Search"]" type="text"
+                    data-toggle="hideseek" data-list=".list" style="border-color: white !important">
+                    <div class="btn-group" style="margin-bottom: 0 !important">
+                        <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0 !important; padding: 0 !important; width: 100px !important">Поиск</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+ </div>
+<div class="row row-cols-1 row-cols-md-2 g-4 list">
+    @foreach (var group in Model.Groups)
+        {
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4 smallGroupBox">
+                            <img class="card-img" src="@group.CoverImagePath" alt="Group cover" style="align-items: center">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h4 class="card-title">@group.Title</h4>
+                                <p class="card-text" style="margin-bottom: 15px !important;">@group.Subtitle</p>
+                                <div class="text-right">
+                                    <a href="/groups/@group.Id" class="btn btn-primary">Перейти</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        }
+</div>
+
+<!--   Core JS Files   -->
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>
+
+<script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<!-- jQuery HideSeek -->
+<script src="~/scripts/jquery.hideseek.min.js" type="text/javascript"></script>
+                 

@@ -1,0 +1,134 @@
+﻿@page "/Cms/BlogPosts/PublicCreate"
+
+@using System.Globalization
+@using Volo.Abp.AspNetCore.Mvc.UI.Packages.TuiEditor
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared.Pages.Shared.Components.AbpPageToolbar
+@using Volo.CmsKit.Admin.Web.Pages
+@using Volo.CmsKit.Admin.Web.Menus
+@using Volo.CmsKit.Admin.Web.Pages.CmsKit.BlogPosts
+@using Volo.CmsKit.Admin.Web.Pages.CmsKit.Tags.Components.TagEditor
+@using Volo.CmsKit.Blogs
+@using Volo.Abp.AspNetCore.Mvc.UI.Packages.Uppy
+@using Volo.Abp.AspNetCore.Mvc.UI.Packages.Slugify
+@using Volo.Abp.Users
+
+@inject ICurrentUser CurrentUser
+
+@inherits CmsKitAdminPageBase
+
+@model CreateModel
+
+@{
+    PageLayout.Content.Title = L["BlogPosts"].Value;
+    PageLayout.Content.BreadCrumb.Add(L["Menu:CMS"].Value);
+    PageLayout.Content.MenuItemName = CmsKitAdminMenus.BlogPosts.BlogPostsMenu;
+}
+
+@section scripts {
+    <abp-script-bundle>
+        <abp-script type="typeof(TuiEditorScriptContributor)"/>
+        <abp-script type="typeof(UppyScriptContributor)"/>
+        <abp-script type="typeof(SlugifyScriptContributor)"/>
+        <abp-script src="/client-proxies/cms-kit-common-proxy.js"/>
+        <abp-script src="/client-proxies/cms-kit-admin-proxy.js"/>
+        <abp-script src="/Pages/CmsKit/BlogPosts/create.js"/>
+    </abp-script-bundle>
+}
+
+@section styles {
+    <abp-style-bundle>
+        <abp-style type="typeof(TuiEditorStyleContributor)"/>
+        <abp-style src="/Pages/CmsKit/BlogPosts/create.css"/>
+    </abp-style-bundle>
+}
+
+@section content_toolbar {
+    @await Component.InvokeAsync(typeof(AbpPageToolbarViewComponent), new { pageName = typeof(CreateModel).FullName })
+}
+
+<style>
+    .form-control {
+        border-color: white !important;
+        color: hsla(0,0%,100%,.8) !important;
+    }
+    ol li, ul li {
+        color: black !important;
+    }
+    .toastui-editor-contents p {
+        color: white !important;
+    }
+    .ProseMirror {
+        color: white !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+         color: white !important;
+    }
+    .card .image {
+         height: 30px !important; 
+    }
+</style>
+
+<abp-card>
+    <abp-card-header title="@L["New"].Value"></abp-card-header>
+    <abp-card-body>
+        <abp-dynamic-form abp-model="ViewModel" asp-page="/CmsKit/BlogPosts/PublicCreate" id="form-blog-post-create">
+            <div class="mb-3">
+            <img class="preview"/>
+                        <span class="btn btn-round btn-primary btn-file" style="width: 100% !important;height: 40px;background: rebeccapurple !important">
+                             <abp-input asp-for="@Model.Cover" class="custom-file-input" type="file" preview-target-id="preview_1" accept="image/*" name="Cover" id="Cover" 
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important"/>
+                        </span>
+        </div>
+
+            <div class="mb-3">
+                <label class="form-label" asp-for="ViewModel.GroupId"></label>
+                <select asp-for="ViewModel.GroupId" id="BlogSelectionSelect" class="form-control"></select>
+                <span asp-validation-for="ViewModel.GroupId"></span>
+            </div>
+            <div class="mb-3">
+                <abp-input asp-for="ViewModel.CreatorId" type="hidden" value="@CurrentUser.Id"/>
+            </div>
+
+            <abp-input asp-for="ViewModel.Title" />
+
+            <abp-input asp-for="ViewModel.Slug" />
+
+            <abp-form-content />
+
+            <div class="content-editor cms-kit-editor"
+                 id="ContentEditor"
+                 data-input-id="@Html.IdFor(x => x.ViewModel.Content)"
+                 data-language="@(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)">
+            </div>
+        </abp-dynamic-form>
+
+        <div id="blog-post-tags-wrapper">
+            <hr />
+            @await Component.InvokeAsync(typeof(TagEditorViewComponent), new
+            {
+                entityType = BlogPostConsts.EntityType,
+                displaySubmitButton = false
+            })
+        </div>
+
+        
+
+    </abp-card-body>
+    <abp-card-footer>
+         <button id="submitButton" class="btn btn-primary">@L["Submit"].Value</button>
+    </abp-card-footer>
+</abp-card>
+
+<!--   Core JS Files   -->
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>

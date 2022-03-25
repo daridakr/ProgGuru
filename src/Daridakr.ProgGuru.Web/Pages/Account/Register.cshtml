@@ -1,0 +1,252 @@
+﻿@page
+@using Daridakr.ProgGuru.Enums.Users
+@using Daridakr.ProgGuru.Web.Pages.Account
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Volo.Abp.Account.Localization
+@using Daridakr.ProgGuru.Localization
+@model RegisterModel
+@inject IHtmlLocalizer<AccountResource> L
+@inject IHtmlLocalizer<ProgGuruResource> PL
+
+        <!--   Core JS Files   -->
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+
+        <script>
+        jQuery(document).ready(function($) {
+            // включаем Popover
+            $('[data-toggle=popover]').popover();
+         });
+        </script>
+
+<div class="card">
+    <div class="card-body p-4">
+        <center><h4>@PL["CreatingAccount"]</h4></center>
+        <form method="post" class="mt-4">
+
+            @*NAME*@
+            <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                <div class="col">
+                    <abp-input asp-for="Input.Name" class="form-control"  auto-focus="true"
+                            style="margin-bottom: 0px;border-color: white;" />
+                </div>
+                <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["NameHelp"]"
+                style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                </button>
+             </div>
+
+             @*SURNAME*@
+             <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                 <div class="col">
+                    <abp-input asp-for="Input.Surname" class="form-control"
+                        style="margin-bottom: 0px;border-color: white;" />
+                </div>
+                 <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["SurnameHelp"]"
+                 style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                </button>
+             </div>
+
+              @*NATIONALITY*@
+              <div class="form-group mb-3" style="margin-bottom: 0 !important;">
+                  <abp-input asp-for="Input.BornLocation" class="form-control"
+                        style="margin-bottom: 0px;border-color: white;" />
+             </div>
+
+             @*BORNDATE*@
+             <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                 <div class="col">
+                    <abp-input asp-for="Input.BornDate" class="form-control"
+                        style="margin-bottom: 0px;border-color: white;" />
+                </div>
+                <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["BornDateHelp"]"
+                 style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                </button>
+             </div>
+
+             @*SPECIALIZATION*@
+             <div class="form-group mb-3 row" >
+                 <div class="col">
+                    <label asp-for="Input.Specialization"></label>
+                    <input asp-for="Input.Specialization" class="form-control" type="" style="margin-bottom: 0px;border-color: white;" type="text" list="cars" />
+                        <datalist id="cars">
+                            @foreach(var s in Model.Specializations)
+                            {
+                                <option>@s.Text</option>
+                            }
+                        </datalist>
+                    <span asp-validation-for="Input.Specialization" class="text-danger"></span>
+                </div>
+                <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["SpecializationHelp"] "
+                 style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                </button>  
+             </div>
+
+             @*CATEGORY*@
+             <div class="form-group mb-3" style="margin-bottom: 0 !important;">
+                 <abp-select asp-for="Input.Category" asp-items="Html.GetEnumSelectList<UserCategory>()" class="form-control"
+                        style="margin-bottom: 0px;background-color: rebeccapurple;" />
+             </div>
+
+              @*BEGGINING YEAR*@
+               <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                    <div class="col">
+                        <abp-input asp-for="Input.BeginningYear" class="form-control"
+                            style="margin-bottom: 0px;border-color: white;" />
+                    </div>
+                   <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["BeginningYearHelp"] "
+                    style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                    </button>  
+             </div>
+
+             @*EDUCATION*@
+             <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                 <div class="col">
+                        <abp-select asp-for="Input.Education" asp-items="Html.GetEnumSelectList<UserEducation>()" class="form-control"
+                            style="margin-bottom: 0px;background-color: rebeccapurple;" />
+                    </div>
+                 <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["EducationHelp"] "
+                    style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                 </button>  
+             </div>
+
+             @*LOCATION*@
+              <div class="form-group mb-3" >
+                    <label asp-for="Input.CurrentLocation"></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" style="border: 1px solid white;padding: 0.5rem 0.7rem;">
+                            <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                        </div>
+                         <input asp-for="Input.CurrentLocation" class="form-control" style="margin-bottom: 0px;border-color: white;"/>
+                    </div>
+                    <span asp-validation-for="Input.CurrentLocation" class="text-danger"></span>
+             </div>
+
+             @*STATUS*@
+             <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                 <div class="col">
+                        <abp-select asp-for="Input.Status" asp-items="Html.GetEnumSelectList<UserStatus>()" class="form-control"
+                            style="margin-bottom: 0px;background-color: rebeccapurple;" />
+                    </div>
+                 <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["StatusHelp"] "
+                    style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                 </button>  
+             </div>
+
+             @*BIO*@
+             <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                 <div class="col">
+                        <abp-input asp-for="Input.Bio" class="form-control"
+                            style="margin-bottom: 0px;border-color: white;" />
+                 </div>
+                  <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["BioHelp"] "
+                    style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                 </button> 
+             </div>
+
+              @*PHONENUMBER*@
+              <div class="form-group mb-3" style="margin-bottom: 0 !important;">
+                  <abp-input asp-for="Input.PhoneNumber" class="form-control"
+                        style="margin-bottom: 0px;border-color: white;" />
+             </div>
+
+             @*GITHUB*@
+             <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                 <div class="col">
+                        <abp-input asp-for="Input.GithubUsername" class="form-control"
+                            style="margin-bottom: 0px;border-color: white;" />
+                 </div>
+                 <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["GithubUsernameHelp"] "
+                    style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                 </button> 
+             </div>
+             <img src="https://res.cloudinary.com/dgvd7jieo/image/upload/v1645021618/system/githelp2_vrbvtg.jpg" style="margin-bottom: 15px !important;margin-top: 0 !important"/>
+
+             @*TELEGRAM*@
+             <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                 <div class="col">
+                        <abp-input asp-for="Input.TelegramUsername" class="form-control"
+                            style="margin-bottom: 0px;border-color: white;" />
+                 </div>
+                 <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["TelegramUsernameHelp"] "
+                    style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                 </button> 
+             </div>
+             <img src="https://res.cloudinary.com/dgvd7jieo/image/upload/v1645022078/system/telegramhelp_ylwamf.jpg" style="margin-bottom: 15px !important;margin-top: 0 !important"/>
+
+             @*DISCORD*@
+             <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                 <div class="col">
+                        <abp-input asp-for="Input.DiscordCode" class="form-control"
+                            style="margin-bottom: 0px;border-color: white;" />
+                 </div>
+                 <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["DiscordUsernameHelp"] "
+                    style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                 </button> 
+             </div>
+             <img src="https://res.cloudinary.com/dgvd7jieo/image/upload/v1645022384/system/discordhelp_spza84.jpg" style="margin-bottom: 15px !important;margin-top: 0 !important"/>
+
+             @*USERNAME*@
+                <div class="form-group mb-3 row" style="margin-bottom: 0 !important;">
+                    <div class="col">
+                         <abp-input asp-for="Input.UserName" class="form-control"
+                            style="margin-bottom: 0px;border-color: white;" />
+                    </div>
+                    <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["UserNameHelp"] "
+                        style="margin: 0 !important;">
+                        <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                    </button> 
+                </div>
+
+            @*EMAIL*@
+            <div class="form-group mb-3" style="margin-bottom: 0 !important;">
+                <abp-input asp-for="Input.EmailAddress" class="form-control"
+                        style="margin-bottom: 0px;border-color: white;" />
+            </div>
+
+            @*PASSWORD*@
+            <div class="form-group mb-3 row">
+                <div class="col">
+                    <abp-input asp-for="Input.Password" class="form-control"
+                        style="margin-bottom: 0px;border-color: white;" />
+                </div>
+                <button type="button" class="btn btn-link" data-container="body" data-toggle="popover" data-placement="left" data-content="@PL["PasswordHelp"] "
+                        style="margin: 0 !important;">
+                    <i class="fa fa-info-circle" style="color: #fff;cursor: pointer"></i>
+                </button> 
+            </div>
+
+            <div class="d-grid gap-2">
+                <abp-button button-type="Primary" type="submit" name="Action" value="Login" style="width: 100%">@L["Register"]</abp-button>
+              @*  <abp-button button-type="Primary" type="submit" class="btn-lg mt-4"></abp-button>*@
+            </div>
+            <center>
+                <label>@L["AlreadyRegistered"]</label>
+                <a class="text-primary" href="@Url.Page("./Login", new {returnUrl = Model.ReturnUrl, returnUrlHash = Model.ReturnUrlHash})" class="text-decoration-none">@L["Login"]</a>
+            </center>
+        </form>
+    </div>
+</div>
+
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>

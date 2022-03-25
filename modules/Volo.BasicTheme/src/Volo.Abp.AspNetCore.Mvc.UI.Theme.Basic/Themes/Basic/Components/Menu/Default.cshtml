@@ -1,0 +1,56 @@
+﻿@using Volo.Abp.UI.Navigation
+@using Volo.Abp.Users
+@inject ICurrentUser CurrentUser
+@model ApplicationMenu
+@foreach (var menuItem in Model.Items)
+{
+    var elementId = string.IsNullOrEmpty(menuItem.ElementId) ? string.Empty : $"id=\"{menuItem.ElementId}\"";
+    var cssClass = string.IsNullOrEmpty(menuItem.CssClass) ? string.Empty : menuItem.CssClass;
+    var disabled = menuItem.IsDisabled ? "disabled" : string.Empty;
+    var url = string.IsNullOrEmpty(menuItem.Url) ? "#" : Url.Content(menuItem.Url);
+    if (menuItem.IsLeaf)
+    {
+        @if(!CurrentUser.IsInRole("admin"))
+        {
+            <li class="nav-item">
+             <a href="\Chat">
+            <abp-button icon="envelope" href="/Chat"/>
+        </a>
+            </li>
+        }
+    }
+    else
+    {
+        <li class="nav-item">
+            <div class="btn-group" style="margin-bottom: 0 !important">
+                <button class="btn btn-primary btn-link" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-bottom: 0 !important; color: white">
+                    @if(CurrentUser.IsAuthenticated)
+                    {
+                         @if (menuItem.Icon != null)
+                    {
+                        if (menuItem.Icon.StartsWith("fa"))
+                        {
+                            <i class="@menuItem.Icon"></i>
+                        }
+                    }
+                    @menuItem.DisplayName
+                    }
+                </button>
+            <div class="dropdown-menu">
+                @if(CurrentUser.IsAuthenticated)
+                    {
+                        @foreach (var childMenuItem in menuItem.Items)
+                    {
+                        @if(childMenuItem.Icon=="fa fa-id-card-o" && !(CurrentUser.IsInRole("admin")))
+                    {
+                        continue;
+                    }
+                        @await Html.PartialAsync("~/Themes/Basic/Components/Menu/_MenuItem.cshtml", childMenuItem)
+                    }
+                    }
+                    
+            </div>
+    </div>
+        </li>
+    }
+}

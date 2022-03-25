@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    
+    
+
+    <PropertyGroup><LangVersion>latest</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+        <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+        <IsPackable>true</IsPackable>
+        <OutputType>Library</OutputType>
+        <RootNamespace>Volo.CmsKit.Web</RootNamespace>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared" Version="5.1.2" />
+        <PackageReference Include="Volo.Abp.AutoMapper" Version="5.1.2" />
+        <ProjectReference Include="..\Volo.CmsKit.Common.Application.Contracts\Volo.CmsKit.Common.Application.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="$(MicrosoftPackageVersion)" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="wwwroot\**\*.*" />
+        <Content Remove="wwwroot\**\*.*" />
+        <EmbeddedResource Include="Pages\**\*.css" />
+        <Content Remove="Pages\**\*.css" />
+        <EmbeddedResource Include="Pages\**\*.js" />
+        <Content Remove="Pages\**\*.js" />
+        <EmbeddedResource Include="Components\**\*.js" />
+        <EmbeddedResource Include="Components\**\*.css" />
+        <Content Remove="Components\**\*.js" />
+        <Content Remove="Components\**\*.css" />
+    </ItemGroup>
+
+</Project>

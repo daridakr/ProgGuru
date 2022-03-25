@@ -348,3 +348,13 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/modules/Volo.Account
+/modules/Volo.Identity
+/modules/Volo.IdentityServer
+/src/Daridakr.ProgGuru.Domain/CloudStorage/CloudinaryAccount.cs
+/test/Volo.Abp.Identity.Application.Tests
+/test/Volo.Abp.Identity.AspNetCore.Tests
+/test/Volo.Abp.Identity.Domain.Tests
+/test/Volo.Abp.Identity.EntityFrameworkCore.Tests
+/test/Volo.Abp.Identity.MongoDB.Tests
+/test/Volo.Abp.Identity.TestBase

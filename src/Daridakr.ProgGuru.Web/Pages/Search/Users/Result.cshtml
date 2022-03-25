@@ -1,0 +1,107 @@
+﻿@page "/search/users/{searchString}"
+@model Daridakr.ProgGuru.Web.Pages.Search.Users.ResultModel
+@using Daridakr.ProgGuru.Enums.Projects
+@using Daridakr.ProgGuru.Enums.Users
+@using Daridakr.ProgGuru.Helpers
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@inject IHtmlLocalizer<ProgGuruResource> L
+@section styles {
+    <abp-style src="/Pages/Index.css" />
+}
+
+@if(Model.Users.Count != 0)
+{
+    <div class="wrapper">
+        <div class="content">
+<h1>@L["SearchResult"]</h1>
+    <div class="row row-cols-1 row-cols-md-2 g-4 list">
+    @foreach (var user in Model.Users)
+        {
+            @if(user.Name!="admin")
+            {
+            <div class="col-sm-6">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <div class="cardBox">
+                                <img class="card-img" src="@user.ExtraProperties["ProfilePictureUrl"]" alt="Group cover" style="align-items: center">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4 class="card-title">@user.Name @user.Surname</h4>
+                                    </div>
+                                    <div class="col-md-4" style="padding-top:1.5px;text-align: right;">
+                                        @if(user.ExtraProperties["Status"].Equals(UserStatus.Undefined))
+                                        {
+                                            <span class="badge badge-default">@L["Undefined"]</span>
+                                        }
+                                        else if(user.ExtraProperties["Status"].Equals(UserStatus.Study))
+                                        {
+                                            <span class="badge badge-success">@L["Study"]</span>
+                                        }
+                                        else if(user.ExtraProperties["Status"].Equals(UserStatus.JobLooking))
+                                        {
+                                            <span class="badge badge-info">@L["JobLooking"]</span>
+                                        }
+                                        else if(user.ExtraProperties["Status"].Equals(UserStatus.Working))
+                                        {
+                                            <span class="badge badge-primary">@L["Working"]</span>
+                                        }
+                                    </div>
+                                </div>
+                                @{
+                                    DateTime bornDate = DateTime.Parse(user.ExtraProperties["BornDate"].ToString());
+                                    int userAge = ProgGuruService.CalculateAge(bornDate, DateTime.Now);
+                                }
+                                <p class="card-text" style="margin-bottom: 3px !important;">
+                                    &#64;@user.UserName &bull; 
+                                    @user.ExtraProperties["Category"] &bull;
+                                    @userAge лет
+                                </p>
+                                <p class="card-text" style="margin-bottom: 0px !important;">
+                                    <i class="fas fa-map-marker-alt" style="color: #e14eca !important"></i> 
+                                    @user.ExtraProperties["CurrentLocation"]
+                                </p>
+
+                                
+                                <div class="text-right">
+                                    <a href="/users/@user.UserName" class="btn btn-primary" style="margin: 0 !important">@L["GoTo"]</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            }    
+        }
+        </div>
+    </div>
+    
+</div>
+}
+else
+{
+    <div class="wrapper">
+        <div class="content">
+             <h1>@L["NotFound"]</h1>
+        </div>
+    </div>
+}
+
+<!--   Core JS Files   -->
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>

@@ -1,0 +1,983 @@
+﻿@page "/users/{userName}"
+@model Daridakr.ProgGuru.Web.Pages.Users.UserModel
+@using Daridakr.ProgGuru.Consts
+@using Daridakr.ProgGuru.Enums.Users
+@using Daridakr.ProgGuru.Helpers
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@using Volo.Abp.Users
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.Commenting
+@using Volo.CmsKit.Public.Web.Pages.CmsKit.Shared.Components.Rating
+@inject IHtmlLocalizer<ProgGuruResource> L
+@inject ICurrentUser CurrentUser
+@section styles {
+    <abp-style src="/Pages/Index.css" />
+}
+@section scripts {
+    <abp-script src="/Pages/Users/User.js" />
+}
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
+
+@if(@Model.User != null) {
+    <div class="section about-section gray-bg" id="about" style="margin-top:50px">
+            <div class="container">
+                <div class="row align-items-center flex-row-reverse">
+                    <div class="col-lg-6">
+                        <div class="about-text go-to">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h1 class="title" style="margin-bottom: 5px;">@Model.User.Name @Model.User.Surname</h1>
+                                </div>
+                                <div class="col-md-4" style="padding-top:1.5px;text-align: right;">
+                                    @if(Model.User.ExtraProperties["Status"].Equals(UserStatus.Undefined))
+                                        {
+                                            <span class="badge badge-default">@L["Undefined"]</span>
+                                        }
+                                        else if(Model.User.ExtraProperties["Status"].Equals(UserStatus.Study))
+                                        {
+                                            <span class="badge badge-success">@L["Study"]</span>
+                                        }
+                                        else if(Model.User.ExtraProperties["Status"].Equals(UserStatus.JobLooking))
+                                        {
+                                            <span class="badge badge-info">@L["JobLooking"]</span>
+                                        }
+                                        else if(Model.User.ExtraProperties["Status"].Equals(UserStatus.Working))
+                                        {
+                                            <span class="badge badge-primary">@L["Working"]</span>
+                                        }
+                                </div>
+                            </div>
+                            @{
+                                DateTime bornDate = DateTime.Parse(Model.User.ExtraProperties["BornDate"].ToString());
+                                int userAge = ProgGuruService.CalculateAge(bornDate, DateTime.Now);
+                             }
+                            <h6 class="theme-color lead" style="margin-bottom: 15px">
+                                &#64;@Model.User.UserName &bull; 
+                                    @Model.User.ExtraProperties["Specialization"] &bull;
+                                    @Model.User.ExtraProperties["Category"] &bull;
+                                    @userAge лет
+                                    @if(CurrentUser.Id==Model.User.Id)
+                                    {
+                                         <small class="text-muted" style="float:right">Это ваша страница</small>
+                                    }
+                            </h6>
+                            <div class="row" style="margin-bottom: 5px">
+                                <div class="col-md-4">
+                                    <p class="card-text" style="margin-bottom: 0px !important;">
+                                        <i class="fas fa-map-marker-alt" style="color: #e14eca !important"></i> 
+                                        @Model.User.ExtraProperties["CurrentLocation"]
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="card-text" style="margin-bottom: 0px !important;">
+                                        @L["Followers"] @Model.Subscribers.Count
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="card-text" style="margin-bottom: 0px !important;">
+                                        @L["Follows"] @(Model.UserSubscriptions.Count+Model.GroupSubscriptions.Count)
+                                    </p>
+                                </div>
+                            </div>
+                            @{
+                                string githublink = "https://github.com/" + @Model.User.ExtraProperties["GithubUsername"];
+                                string telegramlink = "https://t.me/" + @Model.User.ExtraProperties["TelegramUsername"];
+                            }
+                            <div class="row" style="margin-bottom: 5px">
+                                <div class="col-md-4">
+                                    <a class="btn btn-link" href="@githublink"
+                                    target="_blank" role="button" style="color:white;font-weight: 100;padding-left: 0px">
+                                        <i class="fab fa-github" style="color:#e14eca;"></i> &#64;@Model.User.ExtraProperties["GithubUsername"]
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a class="btn btn-link" href="@telegramlink"
+                                    target="_blank" role="button" style="color:white;font-weight: 100;padding-left: 0px">
+                                        <i class="fab fa-telegram" style="color:#e14eca;"></i> &#64;@Model.User.ExtraProperties["TelegramUsername"]
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a class="btn btn-link" role="button" style="color:white;font-weight: 100;padding-left: 0px">
+                                        <i class="fab fa-discord" style="color:#e14eca;"></i> #@Model.User.ExtraProperties["DiscordCode"]
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="row" style="margin-bottom: 15px">
+                                
+                                @if(CurrentUser.Id==Model.User.Id)
+                                {
+                                    <div class="col-md-5">
+                                        <a href="/Account/Manage" class="btn btn-primary">
+                                            <i class="fa fa-pen"></i>
+                                            @L["Edit"]
+                                        </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-5">
+                                        <a href="/Chat" class="btn btn-primary">
+                                            <i class="fa fa-envelope"></i>
+                                            @L["Contact"]
+                                        </a>
+                                    </div>
+                                    @if(Model.IsCurrentUserNotSubscribe)
+                                    {
+                                        <button value="@Model.User.Id" name="@CurrentUser.Id" id="subscribe" style="color:white !important" class="btn btn-primary" type="button">
+                                            <i class="fa fa-plus"></i> @L["Subscribe"].Value
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button value="@Model.User.Id" name="@CurrentUser.Id" id="unsubscribe" style="color:white !important" class="btn-default" type="button">
+                                            <i class="fa fa-close"></i> @L["Unsubscribe"].Value
+                                        </button>
+                                    }
+                                }
+                            </div>
+                             
+                            <div class="card mb-3">
+                                <div class="card-header card-header-primary">
+                                    <strong>@L["Information"]</strong>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-0">
+                                        <div class="col-md-7">
+                                            <p class="card-text">@L["BornDate"]: @DateTime.Parse(@Model.User.ExtraProperties["BornDate"].ToString()).ToShortDateString() </p>
+                                            <p class="card-text">@L["Education"]: @L[@Model.User.ExtraProperties["Education"].ToString()]</p>
+                                            <p class="card-text" style="margin-bottom: 0 !important;">@L["BornLocation"]: @Model.User.ExtraProperties["BornLocation"]</p>
+                                        </div>
+                                        <div class="col-md-5 text-right">
+                                            <p class="card-text">Email <a class="text-primary" href="mailto:@Model.User.Email">@Model.User.Email</a></p>
+                                            @if(@Model.User.PhoneNumber == null)
+                                            {
+                                                <p class="card-text">@L["PhoneNumber"] @L["NotSpecified"]</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="card-text">@L["PhoneNumber"] @Model.User.PhoneNumber</p>
+                                            }
+                                            <p class="card-text" style="margin-bottom: 0 !important;">@L["Exp"] @Model.User.ExtraProperties["BeginningYear"] г.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="avatar-wrapper" style="margin-top: 0px">
+                            <div class="box">
+                                <img class="profile-pic" src="@Model.User.ExtraProperties["ProfilePictureUrl"]" title="" alt="">
+                            </div>
+                             @if(CurrentUser.Id==Model.User.Id)
+                             {
+                                <div class="upload-button">
+		                            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+	                            </div>
+                                <form id="upload" method="post" enctype="multipart/form-data" action="/api/app/profile-picture/upload">
+                                    @Html.AntiForgeryToken()
+                                    <input class="file-upload" type="file" name="file" accept="image/*"/>
+                                </form>
+                             }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                        <div class="col-lg-2">
+                            <div class="count-data text-center">
+                                <h5 class="count h2" data-to="500" data-speed="500" style="margin-bottom: 5px">
+                                    <strong>
+                                        @Model.Projects.Where(project => project.Status==Daridakr.ProgGuru.Enums.Projects.ProjectStatus.Completed).Count()
+                                    </strong>
+                                </h5>
+                                <p class="m-0px font-w-600">@L["CompletedProjects"]</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="count-data text-center">
+                                <h5 class="count h2" data-to="150" data-speed="150" style="margin-bottom: 5px">
+                                    <strong>
+                                       @Model.Projects.Where(project => project.Status==Daridakr.ProgGuru.Enums.Projects.ProjectStatus.During).Count()
+                                    </strong>
+                                </h5>
+                                <p class="m-0px font-w-600">@L["OpenProjects"]</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="count-data text-center">
+                                <h5 class="count h2" data-to="850" data-speed="850" style="margin-bottom: 5px">
+                                    <strong>
+                                        @Model.Articles.Count()
+                                    </strong>
+                                </h5>
+                                <p class="m-0px font-w-600">@L["articles"]</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="count-data text-center">
+                                <h5 class="count h2" data-to="190" data-speed="190" style="margin-bottom: 5px">
+                                    <strong>
+                                        @Model.Courses.Count()
+                                    </strong>
+                                </h5>
+                                <p class="m-0px font-w-600">@L["CompletedCources"]</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="count-data text-center">
+                                <h5 class="count h2" data-to="190" data-speed="190" style="margin-bottom: 5px">
+                                    <strong>
+                                        @Model.CommentCount 
+                                    </strong>
+                                </h5>
+                                <p class="m-0px font-w-600">@L["reviews"]</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="card-text">
+                                @Model.User.ExtraProperties["Bio"]
+                            </p>
+                    </div>
+                </div>
+
+                @*BUTTONS*@
+                <ul class="nav nav-pills nav-pills-primary" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#link1" role="tablist" aria-expanded="true">
+                            @L["Skills"]
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#link2" role="tablist" aria-expanded="false">
+                            @L["Experience"]
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#link3" role="tablist" aria-expanded="false">
+                            @L["Courses"]
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#link4" role="tablist" aria-expanded="false">
+                            @L["Projects"]
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#link5" role="tablist" aria-expanded="false">
+                            @L["Blog"]
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#link6" role="tablist" aria-expanded="false">
+                            @L["Reviews"]
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#link7" role="tablist" aria-expanded="false">
+                            @L["Follows"]
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#link8" role="tablist" aria-expanded="false">
+                            @L["Followers"]
+                        </a>
+                    </li>
+                </ul>
+
+                @*DATA*@
+                <div class="tab-content tab-space" style="padding-top: 30px">
+                    @*SKILLS*@
+                    <div class="tab-pane active" id="link1" aria-expanded="true">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row" style="">
+                                    <h4 style="margin-left:50px">
+                                        <strong>
+                                            @L["ProfSkills"]
+                                        </strong>
+                                    </h4>
+                                    @if(CurrentUser.Id==Model.User.Id)
+                                    {
+                                        <div class="col-md-6" style="margin-bottom: 0px">
+                                            <button id="NewProfSkillButton" style="margin-bottom: 0px" class="btn btn-primary"
+                                            data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                            <i class="fa fa-plus"></i> @L["Add"]
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                                @if(Model.ProfSkills.Count == 0)
+                                {
+                                    <p style="margin-left: 36px;margin-top: 20px !important;color:#6c757d;margin-bottom:50px !important">
+                                        @L["NotSpecified"].Value
+                                    </p>
+                                }
+                                <div class="row row-cols-1 row-cols-md-2 g-4" style="margin-left: 10px;margin-bottom:20px !important">
+                                @foreach(var profSkill in Model.ProfSkills)
+                                        {
+                                            <div class="col-sm-5">
+                                            <div class="card mb-3">
+                                                <div class="row g-0">
+                                                    <div class="col-md-2 skillBox">
+                                                        <img class="card-img" src="@profSkill.GroupCoverImagePath" alt="Skill cover" style="align-items: center;width: 50px !important;">
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-8">
+                                                                <h4 style="margin: 0 !important;line-height: 0 !important;">@profSkill.Name</h4>
+                                                            </div>
+                                                            <div class="col-md-4" style="text-align: right;">
+                                                                @for(int i=0;i<@profSkill.KnownledgeLevel;i++)
+                                            {
+                                                <i class="fas fa-circle" style="font-size: 11px;color:#e14eca"></i>
+                                            }
+                                            @for(int i =0;i<UserConsts.MaxKnownledgeLevel-@profSkill.KnownledgeLevel;i++)
+                                            {
+                                                <i class="fas fa-circle" style="font-size: 11px;"></i>
+                                            } 
+                                                            </div>
+                                                        </div>
+                                                    @if(profSkill.EndYear==0)
+                                                    {
+                                                        <p style="font-size: 12px;margin-top: -8px !important;margin-bottom: 0 !important;">@profSkill.BeginningYear-н.в.</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p style="font-size: 12px;margin-top: -8px !important;margin-bottom: 0 !important;">@profSkill.BeginningYear-@profSkill.EndYear</p>
+                                                    }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            @if (CurrentUser.Id == Model.User.Id)
+                                            {
+                                                <button value="@profSkill.Id" id="UpdateProfSkillButton" style="color:white !important"
+                                                class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0"
+                                                aria-controls="datatable-buttons" type="button">
+                                                    <i class="fa fa-pencil" style="margin-left: 5px;font-size: 14px;"></i>
+                                                </button>
+                                                <button value="@profSkill.Id" name="@profSkill.Name" id="DeleteProfSkillButton"
+                                                style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit"
+                                                data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                    <i class="fas fa-trash-alt" style="margin-left: 5px;font-size: 14px;"></i>
+                                                </button>
+                                            }
+                                        }
+                                 </div>
+                                <div class="row">
+                                    <div class="col-md-5" style="margin-bottom: 0px;">
+                                         @*LANGUAGES*@
+                                        <div class="row">
+                                            <h4 style="margin-left:50px">
+                                                <strong>
+                                                    @L["Languages"]
+                                                </strong>
+                                             </h4> 
+                                            @if(CurrentUser.Id==Model.User.Id)
+                                            {
+                                                <div class="col-md-6" style="margin-bottom: 0px">
+                                                    <button id="NewLanguageSkillButton" style="margin-bottom: 0px" class="btn btn-primary"
+                                                    data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                        <i class="fa fa-plus"></i> @L["Add"]
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if(Model.LanguageSkills.Count != 0)
+                                        {
+                                            @foreach(var languageSkill in Model.LanguageSkills)
+                                            {
+                                               <p style="margin-left: 36px;margin-top: 20px !important;margin-bottom: -15px !important;">
+                                                    <i class="fas fa-caret-right"></i>
+                                                    <b>@languageSkill.Name</b>
+                                                    @L[@languageSkill.LanguageLevel.ToString()]
+                                                    @if (CurrentUser.Id == Model.User.Id)
+                                                    {
+                                                        <button value="@languageSkill.Id" id="UpdateLanguageSkillButton" style="color:white !important"
+                                                        class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0"
+                                                        aria-controls="datatable-buttons" type="button">
+                                                            <i class="fa fa-pencil" style="margin-left: 5px;font-size: 14px;"></i>
+                                                        </button>
+                                                        <button value="@languageSkill.Id" name="@languageSkill.Name" id="DeleteLanguageSkillButton"
+                                                        style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit"
+                                                        data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                            <i class="fas fa-trash-alt" style="font-size: 14px;"></i>
+                                                        </button>
+                                                    }
+                                                </p>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p style="margin-left: 36px;margin-top: 20px !important;color:#6c757d;">
+                                                @L["NotSpecified"].Value
+                                            </p>
+                                        }
+                                    </div>
+                                    @*OTHER*@
+                                    <div class="col-md-5" style="margin-bottom: 15px;">
+                                        <div class="row">
+                                            <h4 style="margin-left:50px">
+                                                <strong>
+                                                    @L["Other"]
+                                                </strong>
+                                            </h4> 
+                                            @if(CurrentUser.Id==Model.User.Id)
+                                            {
+                                                <div class="col-md-6" style="margin-bottom: 0px">
+                                                    <button  id="NewCommonSkillButton" style="margin-bottom: 0px" class="btn btn-primary"
+                                                    data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                        <i class="fa fa-plus"></i> @L["Add"]
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if(Model.CommonSkills.Count == 0)
+                                        {
+                                            <p style="margin-left: 36px;margin-top: 20px !important;color:#6c757d;">
+                                                @L["NotSpecified"].Value
+                                            </p>
+                                        }
+                                        @foreach(var commonSkill in Model.CommonSkills)
+                                        {
+                                            <p style="margin-left: 36px;margin-top: 20px !important;margin-bottom: -15px !important;">
+                                                <i class="fas fa-caret-right"></i>
+                                                @commonSkill.Name
+                                            @if (CurrentUser.Id == Model.User.Id)
+                                            {
+                                                <button value="@commonSkill.Id" name="@commonSkill.Name" id="DeleteCommonSkillButton"
+                                                style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit"
+                                                data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                    <i class="fas fa-trash-alt" style="margin-left: 5px;font-size: 14px;"></i>
+                                                </button>
+                                            }
+                                        </p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*EXPIRIENCE*@
+                    <div class="tab-pane" id="link2" aria-expanded="false">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row" style="margin-bottom:30px">
+                                    <h4 style="margin-left:50px">
+                                        <strong>
+                                            @L["Experience"]
+                                        </strong>
+                                    </h4>
+                                    @if(CurrentUser.Id==Model.User.Id)
+                                    {
+                                        <div class="col-md-6" style="margin-bottom: 0px">
+                                            <button  id="NewJobButton" style="margin-bottom: 0px" class="btn btn-primary"
+                                            data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                <i class="fa fa-plus"></i> @L["Add"]
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                                @if(Model.JobExperiences.Count == 0)
+                                        {
+                                            <p style="margin-left: 36px;margin-top: 20px !important;color:#6c757d;">
+                                                @L["UserNotWorked"].Value
+                                            </p>
+                                        }
+                                 @foreach(var job in Model.JobExperiences)
+                                  {
+                                      @if (job.IsCurrent)
+                                         {
+                                             <div style="background: darkslateblue">
+                                                 <p style="margin-left: 50px;margin-bottom: 0px !important;color: cornflowerblue;">@L["WorkNow"].Value</p>
+                                                 <h4 style="margin-bottom: 15px;margin-left:50px">
+                                                    @job.Position | @job.CompanyName | @job.PositionCategory 
+                                                    @if(!job.Location.IsNullOrEmpty()) { <br> <small>@job.Location</small> }
+                                                    @if(job.EndDate==null) { <small style="float:right;margin-right: 50px">@job.BeginningDate.ToShortDateString()-н.в.</small> }
+                                                    else { <small style="float:right;margin-right: 50px">@job.BeginningDate.ToShortDateString()-@DateTime.Parse(job.EndDate.ToString()).ToShortDateString()</small> }
+                                                @if (CurrentUser.Id == Model.User.Id)
+                                                    {
+                                                        <button value="@job.Id" id="UpdateJobButton" style="color:white !important"
+                                                        class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0"
+                                                        aria-controls="datatable-buttons" type="button">
+                                                            <i class="fa fa-pencil" style="margin-left: 5px;font-size: 12px;"></i>
+                                                        </button>
+                                                        <button value="@job.Id" name="@job.Position" id="DeleteJobButton"
+                                                        style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit"
+                                                        data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                            <i class="fas fa-trash-alt" style="font-size: 12px;"></i>
+                                                        </button>
+                                                    }
+                                                </h4>
+                                             </div>
+                                         }
+                                    else
+                                    {
+                                     <h4 style="margin-bottom: 15px;margin-left:50px">
+                                        @job.Position | @job.CompanyName | @job.PositionCategory 
+                                        @if(!job.Location.IsNullOrEmpty()) { <br> <small>@job.Location</small> }
+                                        @if(job.EndDate==null) { <small style="float:right;margin-right: 50px">@job.BeginningDate.ToShortDateString()-н.в.</small> }
+                                        else {
+                                            <small style="float:right;margin-right: 50px">
+                                                @job.BeginningDate.ToShortDateString()-@DateTime.Parse(job.EndDate.ToString()).ToShortDateString()
+                                            </small>
+                                        }
+                                        @if (CurrentUser.Id == Model.User.Id)
+                                                    {
+                                                        <button value="@job.Id" id="UpdateJobButton" style="color:white !important"
+                                                        class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0"
+                                                        aria-controls="datatable-buttons" type="button">
+                                                            <i class="fa fa-pencil" style="margin-left: 5px;font-size: 12px;"></i>
+                                                        </button>
+                                                        <button value="@job.Id" name="@job.Position" id="DeleteJobButton"
+                                                        style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit"
+                                                        data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                            <i class="fas fa-trash-alt" style="font-size: 12px;"></i>
+                                                        </button>
+                                                    }
+                                    </h4>
+                                    }
+                                    
+                                    <hr />
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    @*AWARDS*@
+                    <div class="tab-pane" id="link3" aria-expanded="false">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row" style="margin-bottom:30px">
+                                    <h4 style="margin-left:50px">
+                                        <strong>
+                                            @L["Courses"]
+                                        </strong>
+                                    </h4>
+                                    @if(CurrentUser.Id==Model.User.Id)
+                                    {
+                                        <div class="col-md-6" style="margin-bottom: 0px">
+                                            <button  id="NewCourseButton" style="margin-bottom: 0px" class="btn btn-primary"
+                                            data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                <i class="fa fa-plus"></i> @L["Add"]
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                                @if(Model.Courses.Count == 0)
+                                        {
+                                            <p style="margin-left: 36px;margin-top: 20px !important;color:#6c757d;">
+                                                @L["UserNotCourses"].Value
+                                            </p>
+                                        }
+                                 @foreach(var course in Model.Courses)
+                                 {
+                                <h4 style="margin-bottom: 15px;margin-left:50px">
+                                    @if (!course.CoverImagePath.IsNullOrEmpty())
+                                    {
+                                        <img src="@course.CoverImagePath" style="height: 400px;"/>
+                                        <br />
+                                    }
+                                    @course.Name
+                                        @if(!course.Description.IsNullOrEmpty()) { <br> <small>@course.Description</small> }
+                                        <small style="float:right;margin-right: 50px">@course.ReceivingYear</small>
+                                        @if (CurrentUser.Id == Model.User.Id)
+                                                    {
+                                                        <button value="@course.Id" id="UpdateCourseButton" style="color:white !important"
+                                                        class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0"
+                                                        aria-controls="datatable-buttons" type="button">
+                                                            <i class="fa fa-pencil" style="margin-left: 5px;font-size: 12px;"></i>
+                                                        </button>
+                                                        <button value="@course.Id" name="@course.Name" id="DeleteCourseButton"
+                                                        style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit"
+                                                        data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                                            <i class="fas fa-trash-alt" style="font-size: 12px;"></i>
+                                                        </button>
+                                                    }
+                                    </h4>
+                                    <hr />
+                                 }
+                            </div>
+                        </div>
+                    </div>
+
+                    @*PROJECTS*@
+                    <div class="tab-pane" id="link4" aria-expanded="false">
+                        <abp-card style="margin-top: 55px">
+    <abp-card-header style="background: transparent !important">
+        <abp-row>
+            <abp-column size-md="_3">
+                <h2>@L["Projects"]</h2>
+            </abp-column>
+            <abp-column size-md="_9" class="text-right">
+                <div class="dt-buttons btn-group flex-wrap">
+                        <button id="copy-button" data-clipboard-target="#ProjectsTable" class="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <span>@L["Copy"]</span>
+                        </button>
+                        <button id="printTable" class="btn btn-secondary buttons-print" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <span>@L["Print"]</span>
+                        </button>
+                        @if(CurrentUser.Id==Model.User.Id)
+                {
+                            <button  id="NewProjectButton" style="color:white !important" class="btn btn-primary" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                                <i class="fa fa-plus"></i> @L["Add"].Value
+                            </button>
+                }
+                    </div>      
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+     <abp-card-body>
+         <table id="ProjectsTable" class="table table-striped" style="background: #1D2F5D !important">
+    <thead>
+        <tr>
+            @if(CurrentUser.Id==Model.User.Id) { <th>@L["Actions"]</th> }
+            <th>@L["Category"]</th>
+            <th>@L["Group"]</th>
+            <th>@L["Title"]</th>
+            <th>@L["Views"]</th>
+           @* <th>@L["Likes"]</th>*@
+            <th>@L["SavesAmount"]</th>
+            <th>@L["Status"]</th>
+            <th>@L["Date"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var project in Model.Projects)
+        {
+            <tr>
+                @if(CurrentUser.Id==Model.User.Id)
+                {
+                <td>
+                    <button value="@project.Id" name="@project.Title" id="DeleteProjectButton" style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                             <i class="fa fa-close"></i>
+                    </button>
+                    <button value="@project.Id" id="UpdateProjectButton" style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                             <i class="fa fa-pencil"></i>
+                    </button>
+                </td>
+                }
+                <td>@L[project.Category.ToString()]</td>
+                <td><a class="text-primary" href="/groups/@project.GroupId" target="_blank">@project.GroupTitle</a></td>
+                <td><a class="text-primary" href="/projects/@project.Id" target="_blank">@project.Title</a></td>
+                <td><center>@project.Views</center></td>
+                @*<td><center>@project.Likes</center></td>*@
+                <td><center>@project.SavesAmount</center></td>
+                <td>@L[project.Status.ToString()]</td>
+                <td>@project.CreationTime.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+     </abp-card-body>
+</abp-card>
+                    </div>
+
+                    @*BLOG*@
+                    <div class="tab-pane" id="link5" aria-expanded="false">
+                        <abp-card style="margin-top: 55px">
+    <abp-card-header style="background: transparent !important">
+        <abp-row>
+            <abp-column size-md="_3">
+                <h2>@L["Articles"]</h2>
+            </abp-column>
+            <abp-column size-md="_9" class="text-right">
+                <div class="dt-buttons btn-group flex-wrap">
+                        <button id="copy-button" data-clipboard-target="#ArticlesTable" class="btn btn-secondary buttons-copy buttons-html5" tabindex="0"
+                        aria-controls="datatable-buttons" type="button">
+                            <span>@L["Copy"]</span>
+                        </button>
+                        <button id="printArticlesTable" class="btn btn-secondary buttons-print" tabindex="0" aria-controls="datatable-buttons" type="button">
+                            <span>@L["Print"]</span>
+                        </button>
+                        @if(CurrentUser.Id==Model.User.Id)
+                {
+                    <a href="/Cms/BlogPosts/PublicCreate" style="color:white !important" class="btn btn-primary" type="button">
+                        <i class="fa fa-plus"></i> @L["Add"].Value
+                    </a>
+                }
+                    </div>
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+     <abp-card-body>
+         <table id="ArticlesTable" class="table table-striped" style="background: #1D2F5D !important">
+    <thead>
+        <tr>
+            @if(CurrentUser.Id==Model.User.Id) { <th>@L["Actions"]</th> }
+            <th>@L["Title"]</th>
+            <th>@L["Views"]</th>
+            <th>@L["SavesAmount"]</th>
+            <th>@L["Date"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var article in Model.Articles)
+        {
+            <tr>
+                @if(CurrentUser.Id==Model.User.Id)
+                {
+                <td>
+                    <button value="@article.Id" name="@article.Title" id="DeleteArticleButton" style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                             <i class="fa fa-close"></i>
+                    </button>
+                    <button value="@article.Id" id="UpdateArticleButton" style="color:white !important" class="btn btn-link btn-warning btn-icon btn-sm edit" data-toggle="modal" tabindex="0" aria-controls="datatable-buttons" type="button">
+                             <i class="fa fa-pencil"></i>
+                    </button>
+                </td>
+                }
+                <td><a class="text-primary" href="/articles/@article.Slug" target="_blank">@article.Title</a></td>
+                <td><center>0</center></td>
+                <td><center>0</center></td>
+                <td>@article.CreationTime.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+     </abp-card-body>
+</abp-card>
+                    </div>
+
+                    @*REVIEWS*@
+                    <div class="tab-pane" id="link6" aria-expanded="false">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 style="margin-bottom: 30px;margin-left:50px">
+                                    <strong>
+                                        @L["Reviews"]
+                                    </strong>
+                                    <small class="count h2" style="float:right;margin-right:50px">
+                                        @await Component.InvokeAsync(typeof(RatingViewComponent), new
+                                        {
+                                            entityType = UserConsts.EntityType,
+                                            entityId = @Model.User.Id.ToString(),
+                                            viewType = "Display"
+                                        })
+                                    </small>
+                                </h4>
+                                @await Component.InvokeAsync(typeof(RatingViewComponent), new
+                                        {
+                                            entityType = UserConsts.EntityType,
+                                            entityId = Model.User.Id.ToString()
+                                        })
+                                 @await Component.InvokeAsync(typeof(CommentingViewComponent), new
+                                    {
+                                        entityType = UserConsts.EntityType,
+                                        entityId = @Model.User.Id.ToString()
+                                    })
+                            </div>
+                        </div>
+                    </div>
+
+                    @*FOLLOWS*@
+                    <div class="tab-pane" id="link7" aria-expanded="false">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <h4 style="margin-left:50px">
+                                        <strong>
+                                            @L["Follows"]
+                                        </strong>
+                                    </h4>
+                                </div>
+                                <div class="card card-nav-tabs">
+          <div class="card-header card-header-primary">
+            <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
+            <div class="nav-tabs-navigation">
+              <div class="nav-tabs-wrapper">
+                <ul class="nav nav-tabs" data-tabs="tabs">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#profile" data-toggle="tab">
+                      <i class="fas fa-users"></i> @L["Users"]
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#messages" data-toggle="tab">
+                      <i class="fas fa-book-reader"></i> @L["Groups"]
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" style="margin-top: 20px !important;">
+            <div class="tab-content text-center">
+                @*USERS*@
+              <div class="tab-pane active" id="profile">
+                  <div class="card" style="">
+                            <div class="card-body">
+                                <form action="#" role="search">
+                                    <div class="input-group" style="margin-bottom: 0 !important">
+                                        <input id="search" name="search" data-toggle="hideseek" data-list=".list" type="text" class="form-control" placeholder="@L["Search"]" style="border-color: white !important">
+                                        <div class="btn-group" style="margin-bottom: 0 !important">
+                                            <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0 !important; padding: 0 !important; width: 100px !important">Поиск</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                  <div class="row row-cols-1 row-cols-md-2 g-4 list">
+                     @foreach (var userSubscription in Model.UserSubscriptions)
+                     {
+                             <div class="col-sm-6">
+                                 <a href="/users/@userSubscription.UserUsername" target="_blank">
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <div class="col-md-3">
+                                            <div class="smallUserBox">
+                                                <img class="card-img" src="@userSubscription.UserProfilePicture" alt="User cover" style="align-items: center">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-8" style="text-align: left;">
+                                                        <h4 class="card-title">@userSubscription.UserName</h4>
+                                                    </div>
+                                                </div>
+                                                <p class="card-text" style="margin-bottom: 3px !important;text-align: left;">
+                                                    @userSubscription.UserUsername
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>
+                            </div> 
+                         
+                     }
+                </div>
+              </div>
+                @*GROUPS*@
+              <div class="tab-pane" id="messages">
+                  <div class="card" style="">
+                            <div class="card-body">
+                                <form action="#" role="search">
+                                    <div class="input-group" style="margin-bottom: 0 !important">
+                                        <input id="search" name="search" data-toggle="hideseek" data-list=".list" type="text" class="form-control" placeholder="@L["Search"]" style="border-color: white !important">
+                                        <div class="btn-group" style="margin-bottom: 0 !important">
+                                            <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0 !important; padding: 0 !important; width: 100px !important">Поиск</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                  <div class="row row-cols-1 row-cols-md-2 g-4 list">
+                     @foreach (var groupSubscription in Model.GroupSubscriptions)
+                     {
+                             <div class="col-sm-6">
+                                 <a href="/groups/@groupSubscription.GroupId" target="_blank">
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <div class="col-md-3">
+                                            <div class="smallUserBox">
+                                                <img class="card-img" src="@groupSubscription.GroupCoverImagePath" alt="User cover" style="align-items: center">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-8" style="text-align: left;">
+                                                        <h4 class="card-title">@groupSubscription.GroupTitle</h4>
+                                                    </div>
+                                                </div>
+                                                <p class="card-text" style="margin-bottom: 3px !important;text-align: left;">
+                                                    @groupSubscription.GroupSubtitle
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>
+                            </div> 
+                         
+                     }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*FOLLOWERS*@
+                    <div class="tab-pane" id="link8" aria-expanded="false">
+                        @if(Model.Subscribers.Count == 0)
+                        {
+                            <p style="margin-left: 36px;margin-top: 20px !important;color:#6c757d;">
+                                @L["NotFollowers"].Value
+                            </p>
+                        }
+                        else
+                        {
+                            <div class="card" style="">
+                            <div class="card-body">
+                                <form action="#" role="search">
+                                    <div class="input-group" style="margin-bottom: 0 !important">
+                                        <input id="search" name="search" data-toggle="hideseek" data-list=".list" type="text" class="form-control" placeholder="@L["Search"]" style="border-color: white !important">
+                                        <div class="btn-group" style="margin-bottom: 0 !important">
+                                            <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0 !important; padding: 0 !important; width: 100px !important">Поиск</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        }
+                <div class="row row-cols-1 row-cols-md-2 g-4 list">
+                     @foreach (var subscriber in Model.Subscribers)
+                     {
+                             <div class="col-sm-6">
+                                 <a href="/users/@subscriber.UserUsername" target="_blank">
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <div class="col-md-3">
+                                            <div class="smallUserBox">
+                                                <img class="card-img" src="@subscriber.UserProfilePicture" alt="User cover" style="align-items: center">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <h4 class="card-title">@subscriber.UserName</h4>
+                                                    </div>
+                                                </div>
+                                                <p class="card-text" style="margin-bottom: 3px !important;">
+                                                    @subscriber.UserUsername
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>
+                            </div> 
+                     }
+                </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+}
+
+<!--   Core JS Files   -->
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>
+<script src="~/scripts/jquery.hideseek.min.js" type="text/javascript"></script>

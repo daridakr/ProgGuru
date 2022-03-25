@@ -1,0 +1,70 @@
+﻿@page 
+@using Volo.Abp.AspNetCore.Mvc.UI.Packages.SignalR
+@model Daridakr.ProgGuru.Web.Pages.ChatModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@inject IHtmlLocalizer<ProgGuruResource> L
+@section styles {
+    <abp-style src="/Pages/Index.css" />
+}
+@section scripts {
+    <abp-script type="typeof(SignalRBrowserScriptContributor)" />
+    <abp-script src="/Pages/Chat.js" />
+}
+
+<div class="wrapper">
+    <div class="content">
+<h1>@L["Chat"]</h1>
+<div>
+    <abp-row>
+        <abp-column size-md="_6">
+            <div class="card card-nav-tabs">
+                <div class="card-header card-header-success">
+                    @L["AllMessages"]:
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0" id="MessageList">
+                    </blockquote>
+                </div>
+            </div>
+        </abp-column>
+        <abp-column size-md="_6">
+            <form>
+                <abp-row>
+                    <abp-column>
+                        <label class="form-label" for="TargetUser">@L["TargetUser"]:</label>
+                        <input type="text" class="form-control" id="TargetUser"/> 
+                    </abp-column>
+                </abp-row>
+                <abp-row class="mt-2">
+                    <abp-column>
+                        <label class="form-label" for="Message">@L["Message"]:</label>
+                        <textarea class="form-control" id="Message" rows="4"></textarea>
+                    </abp-column>
+                </abp-row>
+                <abp-row class="mt-2">
+                    <abp-column>
+                        <abp-button type="submit" id="SendMessageButton" button-type="Primary" size="Block" text="@L["Send"].Value" style="width: 100% !important"/>
+                    </abp-column>
+                </abp-row>
+            </form>
+        </abp-column>
+    </abp-row>
+</div>
+    </div>
+</div>
+
+
+<!--   Core JS Files   -->
+<script src="~/scripts/core/jquery.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>

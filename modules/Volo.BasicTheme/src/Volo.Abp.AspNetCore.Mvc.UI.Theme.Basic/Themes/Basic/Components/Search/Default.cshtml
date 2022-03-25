@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@inject IHtmlLocalizer<ProgGuruResource> L
+<div class="input-group" style="margin-bottom: 0 !important">
+<div class="btn-group" style="margin-bottom: 0 !important">
+  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-bottom: 0 !important">
+    ≡
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" id="projects" href="#">@L["Projects"]</a>
+    <a class="dropdown-item" id="users" href="#">@L["Users"]</a>
+    <a class="dropdown-item" id="groups" href="#">@L["Groups"]</a>
+    <a class="dropdown-item" id="articles" href="#">@L["Articles"]</a>
+  </div>
+</div>
+        <input type="text" name="search" class="form-control" placeholder="@L["Search"]" style="border-color: #1D2F5D !important">
+</div>
+<script>
+    var projectsLink;
+    var usersLink;
+    var groupsLink;
+    var articlesLink;
+
+    projectsLink = document.getElementById('projects');
+    usersLink = document.getElementById('users');
+    groupsLink = document.getElementById('groups');
+    articlesLink = document.getElementById('articles');
+      
+    projectsLink.onclick = function() {     
+        let input = document.querySelector('input');
+        if(input.value.length!=0)
+        {
+            this.setAttribute('href',`/search/projects/${input.value}`);
+        }
+    }
+
+    usersLink.onclick = function() {     
+        let input = document.querySelector('input');
+        if(input.value.length!=0)
+        {
+            this.setAttribute('href',`/search/users/${input.value}`);
+        }
+    }
+
+    groupsLink.onclick = function() {     
+        let input = document.querySelector('input');
+        if(input.value.length!=0)
+        {
+            this.setAttribute('href',`/search/groups/${input.value}`);
+        }
+    }
+
+    articlesLink.onclick = function() {     
+        let input = document.querySelector('input');
+        if(input.value.length!=0)
+        {
+            this.setAttribute('href',`/search/articles/${input.value}`);
+        }
+    }
+</script>

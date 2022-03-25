@@ -1,0 +1,111 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  
+  
+
+  <PropertyGroup><LangVersion>latest</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <IsPackable>true</IsPackable>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Volo.CmsKit.Admin.Web</RootNamespace>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Daridakr.ProgGuru.Application\Daridakr.ProgGuru.Application.csproj" />
+    <ProjectReference Include="..\Volo.CmsKit.Common.Web\Volo.CmsKit.Common.Web.csproj" />
+    <ProjectReference Include="..\Volo.CmsKit.Admin.Application.Contracts\Volo.CmsKit.Admin.Application.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="$(MicrosoftPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Pages\**\*.css" />
+    <EmbeddedResource Include="Pages\**\*.js" />
+    <EmbeddedResource Include="Components\**\*.js" />
+    <EmbeddedResource Include="Components\**\*.css" />
+    <EmbeddedResource Include="wwwroot\**\*.js" />
+    <EmbeddedResource Include="wwwroot\**\*.css" />
+    <Content Remove="Pages\**\*.css" />
+    <Content Remove="Pages\**\*.js" />
+    <Content Remove="Components\**\*.js" />
+    <Content Remove="Components\**\*.css" />
+    <Content Remove="wwwroot\**\*.js" />
+    <Content Remove="wwwroot\**\*.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="wwwroot\scripts\black-dashboard.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\black-dashboard.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\core\bootstrap.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\core\jquery.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\core\popper.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\jquery.hideseek.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\jquery.hideseek.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\plugins\bootstrap-notify.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\plugins\chartjs.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\plugins\perfect-scrollbar.jquery.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\plugins\tagify.css" />
+    <EmbeddedResource Remove="wwwroot\scripts\plugins\tagify.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\plugins\tagify.polyfills.min.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\tags.js" />
+    <EmbeddedResource Remove="wwwroot\scripts\tagsinput.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Admin\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Pages\Admin\_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\scripts\black-dashboard.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\black-dashboard.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\jquery.hideseek.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\jquery.hideseek.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\plugins\tagify.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\plugins\tagify.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\plugins\tagify.polyfills.min.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\tags.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\tagsinput.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\scripts\core\bootstrap.min.js" />
+    <None Include="wwwroot\scripts\core\jquery.min.js" />
+    <None Include="wwwroot\scripts\core\popper.min.js" />
+    <None Include="wwwroot\scripts\plugins\bootstrap-notify.js" />
+    <None Include="wwwroot\scripts\plugins\chartjs.min.js" />
+    <None Include="wwwroot\scripts\plugins\perfect-scrollbar.jquery.min.js" />
+  </ItemGroup>
+
+</Project>

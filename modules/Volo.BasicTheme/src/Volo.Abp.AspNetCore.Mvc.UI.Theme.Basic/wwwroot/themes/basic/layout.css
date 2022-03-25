@@ -1,0 +1,459 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+
+body {
+    font-family: 'Noto Sans' !important;
+    overflow-x: hidden !important;
+}
+
+html,
+body {
+    height: 100% !important;
+}
+
+.wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100% !important;
+}
+
+.content {
+    flex: 1 0 auto !important;
+}
+
+footer {
+    flex: 0 0 auto !important;
+}
+
+.dropdown-menu .dropdown-menu {
+    top: auto !important;
+    left: 100% !important;
+    transform: translateY(-2rem) !important;
+}
+
+.dropdown-item + .dropdown-menu {
+    display: none !important;
+}
+
+.dropdown-item.submenu::after {
+    content: '▸' !important;
+    margin-left: 0.5rem !important;
+}
+
+.dropdown-item:hover + .dropdown-menu,
+.dropdown-menu:hover {
+    display: block !important;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Sans' !important;
+}
+
+.bg-light {
+    background-color: #030F39 !important;
+}
+
+.navbar.bg-dark {
+    background: #2A3F83 !important;
+}
+
+.card-body {
+    background-color: #1D2F5D !important;
+}
+
+.card {
+    background: #1D2F5D !important;
+    border-radius: .4285rem !important;
+    border: .4285rem solid #1D2F5D !important;
+}
+
+.form-control {
+    border-color: white;
+}
+
+.form-check .form-check-sign:after {
+    content: "✓" !important;
+}
+
+.align-items-end {
+    align-items: center !important;
+}
+
+.logo {
+    width: 390px;
+    height: 150px;
+    display: block;
+    text-indent: -9999px;
+    margin-bottom: 35px !important;
+}
+
+.mb-40 {
+    margin-bottom: 40px !important;
+}
+
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+p {
+    margin-top: 0 !important;
+    margin-bottom: 25px !important;
+}
+
+.full {
+    width: 100% !important;
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+@media (max-width: 768px) {
+    .breadcrumbs .d-flex {
+        display: block !important;
+    }
+
+    .breadcrumbs ol {
+        display: block !important;
+    }
+
+        .breadcrumbs ol li {
+            display: inline-block !important;
+        }
+}
+
+/*--------------------------------------------------------------
+# Hero Section
+--------------------------------------------------------------*/
+#hero {
+    width: 100% !important;
+    height: 80vh !important;
+}
+
+    #hero .container {
+        padding-top: 84px !important;
+    }
+
+@media (max-width: 991px) {
+    #hero {
+        height: 100vh !important;
+        text-align: center !important;
+    }
+
+        #hero .hero-img img {
+            width: 50% !important;
+        }
+}
+
+@media (max-width: 768px) {
+    #hero .hero-img img {
+        width: 80% !important;
+    }
+}
+
+/*--------------------------------------------------------------
+# Sections General
+--------------------------------------------------------------*/
+section {
+    padding: 60px 0 !important;
+    overflow: hidden !important;
+}
+
+/*--------------------------------------------------------------
+# Chat
+--------------------------------------------------------------*/
+
+#MessageList {
+    /*border: 1px solid gray;*/
+    height: 300px;
+    overflow: auto;
+    list-style: none;
+    padding-left: 0;
+    padding: 10px;
+}
+
+#TargetUser {
+    width: 100%;
+}
+
+#Message {
+    width: 100%;
+}
+
+/*--------------------------------------------------------------
+# Avatar Image
+--------------------------------------------------------------*/
+
+.avatar-wrapper {
+    position: relative;
+    height: 435px;
+    width: 435px;
+    margin: 50px auto;
+    overflow: hidden;
+    box-shadow: 1px 1px 15px -5px black;
+    transition: all 0.3s ease;
+}
+
+    .avatar-wrapper:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+
+        .avatar-wrapper:hover .profile-pic {
+            opacity: 0.5;
+        }
+
+    .avatar-wrapper .profile-pic {
+        height: 100%;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .avatar-wrapper .profile-pic:after {
+            font-family: FontAwesome;
+            content: "";
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            font-size: 190px;
+            background: #ecf0f1;
+            color: #34495e;
+            text-align: center;
+        }
+
+    .avatar-wrapper .upload-button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+        .avatar-wrapper .upload-button .fa-arrow-circle-up {
+            position: absolute;
+            font-size: 234px;
+            top: 100px;
+            left: 100px;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            color: #34495e;
+        }
+
+        .avatar-wrapper .upload-button:hover .fa-arrow-circle-up {
+            opacity: 0.9;
+        }
+
+.cardBox {
+    position: relative;
+    overflow: hidden;
+    width: 155px;
+    height: 155px;
+}
+
+    .cardBox img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 155px;
+        height: 155px;
+        object-fit: cover;
+    }
+
+.projectBox {
+    position: relative;
+    overflow: hidden;
+    width: 1096px;
+    height: 475px;
+}
+
+    .projectBox img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 1096px;
+        height: 475px;
+        object-fit: cover;
+    }
+
+.smallProjectBox {
+    position: relative;
+    overflow: hidden;
+    width: 526px;
+    height: 228px;
+}
+
+    .smallProjectBox img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 526px;
+        height: 228px;
+        object-fit: cover;
+    }
+
+.groupBox {
+    position: relative;
+    overflow: hidden;
+    width: 185px;
+    height: 185px;
+}
+
+    .groupBox img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 185px;
+        height: 185px;
+        object-fit: cover;
+    }
+
+.smallGroupBox {
+    position: relative;
+    overflow: hidden;
+    width: 155px;
+    height: 155px;
+}
+
+    .smallGroupBox img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 155px;
+        height: 155px;
+        object-fit: cover;
+    }
+
+.skillBox {
+    position: relative;
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+}
+
+    .skillBox img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+.smallUserBox {
+    position: relative;
+    overflow: hidden;
+    width: 90px;
+    height: 90px;
+}
+
+    .smallUserBox img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+.userCircle {
+    position: relative;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+}
+
+    .userCircle img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+    }
+
+.box {
+    position: relative;
+    overflow: hidden;
+    width: 435px;
+    height: 435px;
+}
+
+    .box img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 435px;
+        height: 435px;
+        object-fit: cover;
+    }
+
+/*--------------------------------------------------------------
+# Review Field
+--------------------------------------------------------------*/
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    float: left
+}
+
+    .rating > input {
+        display: none
+    }
+
+    .rating > label {
+        position: relative;
+        width: 19px;
+        font-size: 20px !important;
+        color: #fd7e14 !important;
+        cursor: pointer
+    }
+
+        .rating > label::before {
+            content: "\2605";
+            position: absolute;
+            opacity: 0
+        }
+
+        .rating > label:hover:before,
+        .rating > label:hover ~ label:before {
+            opacity: 1 !important
+        }
+
+    .rating > input:checked ~ label:before {
+        opacity: 1
+    }
+
+    .rating:hover > input:checked ~ label:before {
+        opacity: 0.4
+    }
+
+/*--------------------------------------------------------------
+# Projects
+--------------------------------------------------------------*/
+.project-wrapper {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+    .project-wrapper:hover {
+        transform: scale(1.05);
+    }
+
+        .project-wrapper:hover .profile-pic {
+            opacity: 0.5;
+        }

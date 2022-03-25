@@ -1,0 +1,95 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using Volo.Abp.PermissionManagement.Localization
+@using Volo.Abp.PermissionManagement.Web.Pages.AbpPermissionManagement
+@model PermissionManagementModal
+@inject IHtmlLocalizer<AbpPermissionManagementResource> L
+@{
+    Layout = null;
+}
+
+<style>
+.tab-content .tab-pane {
+    color: black !important;
+}
+</style>
+
+<form method="post" asp-page="/AbpPermissionManagement/PermissionManagementModal" data-script-class="abp.modals.PermissionManagement">
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@(L["Permissions"].Value) - @Model.EntityDisplayName</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <abp-input asp-for="SelectAllInAllTabs"
+                    style="border-color: #1D2F5D !important; color: #1D2F5D !important;
+                    opacity: 100 !important; visibility: inherit !important; margin-left: 0 !important;"
+                    check-box-hidden-input-render-mode="CheckBoxHiddenInputRenderMode.None"
+                    label="@L["SelectAllInAllTabs"].Value"/>
+                    <hr class="mt-2 mb-2"/>
+                    <input asp-for="@Model.ProviderKey"/>
+                    <input asp-for="@Model.ProviderName"/>
+                    <abp-tabs name="PermissionsTabs" tab-style="PillVertical" vertical-header-size="_4" class="custom-scroll-container">
+                        @for (var i = 0; i < Model.Groups.Count; i++)
+                        {
+                            var group = Model.Groups[i];
+                            <abp-tab title="@group.DisplayName" name="v-pills-tab-@group.GetNormalizedGroupName()">
+                            <h4 style="color: black">@group.DisplayName</h4>
+                            <hr class="mt-2 mb-3"/>
+                            <div class="w-100" style="max-height: 640px;overflow-y: auto">
+                            <div class="ps-1 pt-1">
+                                <abp-input asp-for="@group.IsAllPermissionsGranted"
+                                style="border-color: #1D2F5D !important; color: #1D2F5D !important;
+                                opacity: 100 !important; visibility: inherit !important; margin-left: 0 !important;"
+                                check-box-hidden-input-render-mode="CheckBoxHiddenInputRenderMode.None"
+                                name="SelectAllInThisTab"
+                                id="SelectAllInThisTab-@group.GetNormalizedGroupName()"
+                                data-tab-id="v-pills-tab-@group.GetNormalizedGroupName()"
+                                label="@L["SelectAllInThisTab"].Value"/>
+                                <hr class="mb-3"/>
+                                @for (var j = 0; j < group.Permissions.Count; j++)
+                                {
+                                    var permission = group.Permissions[j];
+                                    <abp-input asp-for="@permission.IsGranted"
+                                    style="border-color: #1D2F5D !important; color: #1D2F5D !important;
+                                    opacity: 100 !important; visibility: inherit !important; margin-left: 0 !important;"
+                                    check-box-hidden-input-render-mode="CheckBoxHiddenInputRenderMode.None"
+                                    abp-id-name="@Model.Groups[i].Permissions[j].IsGranted"
+                                    label="@permission.GetShownName(Model.ProviderName)"
+                                    disabled="@permission.IsDisabled(Model.ProviderName)"
+                                    group-data-permission-name="@permission.Name"
+                                    group-data-parent-name="@(permission.ParentName ?? "")"
+                                    group-style="margin-left: @(permission.Depth * 20)px"/>
+                                    <input asp-for="@permission.Name" abp-id-name="@Model.Groups[i].Permissions[j].Name"/>
+                                }
+                            </div>
+                        </div>
+                    </abp-tab>
+                }
+            </abp-tabs>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@L["Save"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@L["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="~/scripts/core/popper.min.js" type="text/javascript"></script>
+<script src="~/scripts/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/scripts/plugins/perfect-scrollbar.jquery.min.js"></script>
+<!--  Google Maps Plugin    -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+<!-- Chartist JS -->
+<script src="~/scripts/plugins/chartjs.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="~/scripts/plugins/bootstrap-notify.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="~/scripts/black-dashboard.js?v=1.0.0" type="text/javascript"></script>

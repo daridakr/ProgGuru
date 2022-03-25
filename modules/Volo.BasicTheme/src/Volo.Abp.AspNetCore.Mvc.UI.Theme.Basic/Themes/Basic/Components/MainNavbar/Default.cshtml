@@ -1,0 +1,66 @@
+﻿@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Themes.Basic.Components.Brand
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Themes.Basic.Components.Menu
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Themes.Basic.Components.Toolbar
+@using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Themes.Basic.Components.Search
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Daridakr.ProgGuru.Localization
+@using Volo.Abp.Users
+@inject ICurrentUser CurrentUser
+@inject IHtmlLocalizer<ProgGuruResource> L
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm flex-column flex-md-row mb-4" id="main-navbar" style="min-height: 3rem; margin-bottom: 0 !important;">
+    <div class="container">
+        @(await Component.InvokeAsync<MainNavbarBrandViewComponent>())
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#main-navbar-collapse" aria-controls="main-navbar-collapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navbar-collapse">
+            <ul class="navbar-nav"> 
+                @(await Component.InvokeAsync<SearchViewComponent>())
+            </ul>
+            <ul class="navbar-nav">
+                @(await Component.InvokeAsync<MainNavbarMenuViewComponent>())
+            </ul> 
+            <ul class="navbar-nav"> 
+                @(await Component.InvokeAsync<MainNavbarToolbarViewComponent>())
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm flex-column flex-md-row mb-4" id="main-navbar" style="min-height: 32px; background: #1D2F5D !important; z-index: 0 !important">
+    <div class="container">
+        <div class="collapse navbar-collapse" id="main-navbar-collapse">
+            <ul class="navbar-nav mx-auto"> 
+                @if(CurrentUser.IsAuthenticated){<a href="/groups/all" style="color: white">@L["Groups"]</a>}
+                else {<a href="/account/login" style="color: white">@L["Groups"]</a>}
+            </ul>
+            <ul class="navbar-nav mx-auto">
+                @if(CurrentUser.IsAuthenticated){<a href="/users/all" style="color: white">@L["Users"]</a>}
+                else {<a href="/account/login" style="color: white">@L["Users"]</a>}
+            </ul> 
+            <ul class="navbar-nav mx-auto">
+                @if(CurrentUser.IsAuthenticated){<a href="/projects/all" style="color: white">@L["Projects"]</a>}
+                else {<a href="/account/login" style="color: white">@L["Projects"]</a>}
+            </ul>
+            <ul class="navbar-nav mx-auto"> 
+                @if(CurrentUser.IsAuthenticated){<a href="/articles/all" style="color: white">@L["Articles"]</a>}
+                else {<a href="/account/login" style="color: white">@L["Articles"]</a>}
+            </ul>
+            @*<ul class="navbar-nav mx-auto"> 
+                @if(CurrentUser.IsAuthenticated){<a href="/vacancies/all" style="color: white">@L["Vacancies"]</a>}
+                else {<a href="/account/login" style="color: white">@L["Vacancies"]</a>}
+            </ul>
+            <ul class="navbar-nav mx-auto"> 
+                @if(CurrentUser.IsAuthenticated){<a href="/courses/all" style="color: white">@L["Courses"]</a>}
+                else {<a href="/account/login" style="color: white">@L["Courses"]</a>}
+            </ul>
+            <ul class="navbar-nav mx-auto"> 
+                @if(CurrentUser.IsAuthenticated){<a href="/forum" style="color: white">@L["Forum"]</a>}
+                else {<a href="/account/login" style="color: white">@L["Forum"]</a>}
+            </ul>*@
+        </div>
+    </div>
+</nav>
