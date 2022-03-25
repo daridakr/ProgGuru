@@ -358,6 +358,3 @@ MigrationBackup/
 /test/Volo.Abp.Identity.EntityFrameworkCore.Tests
 /test/Volo.Abp.Identity.MongoDB.Tests
 /test/Volo.Abp.Identity.TestBase
-Volo.Abp.Identity.abpmdl.json
-Volo.Abp.Identity.abpsln.json
-Volo.Abp.Identity.sln.DotSettings
