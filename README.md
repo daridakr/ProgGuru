@@ -12,7 +12,7 @@
 </a>
 </div>
 
-___
+#
 
 <br>
 
@@ -41,11 +41,13 @@ My college graduate work – a **social network for IT specialists**. Web applic
 
 <br>
 
-# Description
+## Description
+#
 
 <br>
 
-# Usage
+## Usage
+#
 
 
 
