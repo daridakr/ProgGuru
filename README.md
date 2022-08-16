@@ -1,5 +1,7 @@
 <h1 align="center"> ProgGuru </h1>
 
+<br>
+
 <div align="center">
 <a href="https://github.com/abpframework/abp">
 <img height="20" width="110" src="readme_assets/abp.png" />
@@ -39,15 +41,11 @@
 
 My college graduate work – a **social network for IT specialists**. Web application developed on ABP Framework with **layered architecture** based on **DDD** principles and patterns.
 
-<br>
-
 ## Description
-#
 
 <br>
 
 ## Usage
-#
 
 
 
